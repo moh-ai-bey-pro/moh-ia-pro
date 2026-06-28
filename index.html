@@ -18,179 +18,2817 @@
             --accent-pink: #ec4899;
             --text-primary: #f8fafc;
             --text-secondary: #94a3b8;
+            --text-muted: #64748b;
+            --border: rgba(255,255,255,0.08);
+            --glass: rgba(255,255,255,0.03);
         }
+
+        * {
+            -webkit-tap-highlight-color: transparent;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
         body {
-            font-family: 'Inter', 'Cairo', sans-serif;
-            background-color: var(--bg-primary);
+            font-family: 'Cairo', 'Inter', sans-serif;
+            background: var(--bg-primary);
             color: var(--text-primary);
-            margin: 0;
-            padding: 0;
+            overflow-x: hidden;
+            min-height: 100vh;
+        }
+
+        body[dir="ltr"] {
+            font-family: 'Inter', 'Cairo', sans-serif;
+        }
+
+        /* Animated background orbs */
+        .orb {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(100px);
+            opacity: 0.15;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        .orb-1 {
+            width: 500px;
+            height: 500px;
+            background: var(--accent-purple);
+            top: -100px;
+            left: -100px;
+            animation: float1 20s ease-in-out infinite;
+        }
+
+        .orb-2 {
+            width: 400px;
+            height: 400px;
+            background: var(--accent-cyan);
+            bottom: -50px;
+            right: -50px;
+            animation: float2 25s ease-in-out infinite;
+        }
+
+        .orb-3 {
+            width: 350px;
+            height: 350px;
+            background: var(--accent-pink);
+            top: 40%;
+            left: 50%;
+            animation: float3 30s ease-in-out infinite;
+        }
+
+        @keyframes float1 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(100px, 100px); }
+        }
+
+        @keyframes float2 {
+            0%, 100% { transform: translate(0, 0); }
+            50% { transform: translate(-80px, -80px); }
+        }
+
+        @keyframes float3 {
+            0%, 100% { transform: translate(-50%, 0); }
+            50% { transform: translate(-50%, -100px); }
+        }
+
+        /* Glassmorphism */
+        .glass {
+            background: rgba(255, 255, 255, 0.03);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border);
+        }
+
+        .glass-strong {
+            background: rgba(14, 14, 24, 0.85);
+            backdrop-filter: blur(30px);
+            -webkit-backdrop-filter: blur(30px);
+            border: 1px solid var(--border);
+        }
+
+        /* Gradient text */
+        .gradient-text {
+            background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 50%, #ec4899 100%);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            color: transparent;
+        }
+
+        .gradient-bg {
+            background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+        }
+
+        .gradient-bg-2 {
+            background: linear-gradient(135deg, #ec4899 0%, #8b5cf6 100%);
+        }
+
+        /* Channel card */
+        .channel-card {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            cursor: pointer;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .channel-card::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(139,92,246,0.15), rgba(6,182,212,0.15));
+            opacity: 0;
+            transition: opacity 0.3s;
+            pointer-events: none;
+        }
+
+        .channel-card:hover {
+            transform: translateY(-4px);
+            border-color: rgba(139, 92, 246, 0.4);
+            box-shadow: 0 20px 40px -10px rgba(139, 92, 246, 0.3);
+        }
+
+        .channel-card:hover::before {
+            opacity: 1;
+        }
+
+        .channel-card .play-icon {
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .channel-card:hover .play-icon {
+            opacity: 1;
+        }
+
+        /* Scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: rgba(139, 92, 246, 0.3);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: rgba(139, 92, 246, 0.5);
+        }
+
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* Player */
+        .player-modal {
+            transition: opacity 0.3s, visibility 0.3s;
+        }
+
+        .player-modal.hidden-player {
+            opacity: 0;
+            visibility: hidden;
+            pointer-events: none;
+        }
+
+        /* Status pulse */
+        .pulse-dot {
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.5; transform: scale(1.2); }
+        }
+
+        /* Loading spinner */
+        .spinner {
+            width: 48px;
+            height: 48px;
+            border: 3px solid rgba(139, 92, 246, 0.2);
+            border-top-color: var(--accent-purple);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* Fade in animation */
+        .fade-in {
+            animation: fadeIn 0.4s ease forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Category pill */
+        .category-pill {
+            transition: all 0.25s ease;
+            white-space: nowrap;
+        }
+
+        .category-pill.active {
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            color: white;
+            border-color: transparent;
+            box-shadow: 0 4px 20px rgba(139, 92, 246, 0.4);
+        }
+
+        /* Logo */
+        .logo-container {
+            position: relative;
+        }
+
+        .logo-glow {
+            position: absolute;
+            inset: -4px;
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            border-radius: 14px;
+            opacity: 0.5;
+            filter: blur(12px);
+            z-index: -1;
+        }
+
+        /* Video controls */
+        .video-control-btn {
+            transition: all 0.2s;
+        }
+
+        .video-control-btn:hover {
+            background: rgba(255,255,255,0.15);
+            transform: scale(1.05);
+        }
+
+        /* Toast */
+        .toast {
+            animation: slideIn 0.3s ease forwards;
+        }
+
+        @keyframes slideIn {
+            from { transform: translateX(100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        body[dir="rtl"] .toast {
+            animation: slideInRtl 0.3s ease forwards;
+        }
+
+        @keyframes slideInRtl {
+            from { transform: translateX(-100%); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+
+        /* Skeleton loading */
+        .skeleton {
+            background: linear-gradient(90deg, rgba(255,255,255,0.03) 25%, rgba(255,255,255,0.06) 50%, rgba(255,255,255,0.03) 75%);
+            background-size: 200% 100%;
+            animation: shimmer 1.5s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { background-position: 200% 0; }
+            100% { background-position: -200% 0; }
+        }
+
+        /* Admin dashboard */
+        .admin-sidebar-item {
+            transition: all 0.2s;
+        }
+
+        .admin-sidebar-item.active {
+            background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(6,182,212,0.2));
+            border-right: 3px solid var(--accent-purple);
+        }
+
+        body[dir="ltr"] .admin-sidebar-item.active {
+            border-right: none;
+            border-left: 3px solid var(--accent-purple);
+        }
+
+        /* Input styles */
+        .custom-input {
+            background: rgba(255,255,255,0.04);
+            border: 1px solid var(--border);
+            transition: all 0.2s;
+        }
+
+        .custom-input:focus {
+            outline: none;
+            border-color: var(--accent-purple);
+            box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1);
+        }
+
+        /* Button gradient */
+        .btn-gradient {
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            transition: all 0.3s;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-gradient::before {
+            content: '';
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, #06b6d4, #8b5cf6);
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .btn-gradient:hover::before {
+            opacity: 1;
+        }
+
+        .btn-gradient > * {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Video container */
+        .video-wrapper {
+            position: relative;
+            background: #000;
+            border-radius: 16px;
+            overflow: hidden;
+        }
+
+        .video-wrapper video {
+            width: 100%;
+            display: block;
+            max-height: 70vh;
+        }
+
+        /* Drag and drop */
+        .drag-zone {
+            border: 2px dashed rgba(139, 92, 246, 0.3);
+            transition: all 0.3s;
+        }
+
+        .drag-zone.drag-over {
+            border-color: var(--accent-purple);
+            background: rgba(139, 92, 246, 0.05);
+        }
+
+        /* Stats card */
+        .stats-card {
+            position: relative;
+            overflow: hidden;
+        }
+
+        .stats-card::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 80px;
+            height: 80px;
+            background: radial-gradient(circle, var(--accent-purple) 0%, transparent 70%);
+            opacity: 0.15;
+            border-radius: 50%;
+            transform: translate(30%, -30%);
+        }
+
+        /* Quality badge */
+        .quality-badge {
+            background: linear-gradient(135deg, rgba(139,92,246,0.2), rgba(6,182,212,0.2));
+            border: 1px solid rgba(139,92,246,0.3);
+        }
+
+        /* Smooth transitions for language change */
+        .lang-transition {
+            transition: opacity 0.2s;
+        }
+
+        /* Channel image fallback */
+        .channel-logo-placeholder {
+            background: linear-gradient(135deg, #1e1e30, #2a2a45);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* Mobile responsive */
+        @media (max-width: 640px) {
+            .orb { filter: blur(60px); }
+            .orb-1, .orb-2, .orb-3 { width: 250px; height: 250px; }
+        }
+
+        /* Switch toggle */
+        .toggle-switch {
+            position: relative;
+            width: 44px;
+            height: 24px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+
+        .toggle-switch.active {
+            background: var(--accent-purple);
+        }
+
+        .toggle-switch::after {
+            content: '';
+            position: absolute;
+            top: 2px;
+            left: 2px;
+            width: 20px;
+            height: 20px;
+            background: white;
+            border-radius: 50%;
+            transition: transform 0.3s;
+        }
+
+        .toggle-switch.active::after {
+            transform: translateX(20px);
+        }
+
+        body[dir="rtl"] .toggle-switch::after {
+            left: auto;
+            right: 2px;
+        }
+
+        body[dir="rtl"] .toggle-switch.active::after {
+            transform: translateX(-20px);
         }
     </style>
 </head>
-<body class="min-h-screen flex flex-col">
+<body>
+    <!-- Background orbs -->
+    <div class="orb orb-1"></div>
+    <div class="orb orb-2"></div>
+    <div class="orb orb-3"></div>
 
-    <header class="bg-[var(--bg-secondary)] p-4 border-b border-white/5 flex flex-wrap justify-between items-center gap-4">
-        <h1 class="text-xl font-bold text-white flex items-center gap-2">
-            <i class="lucide-tv"></i> MOH TV Pro
-        </h1>
-        
-        <div class="flex items-center gap-3 bg-[var(--bg-tertiary)] px-4 py-2 rounded-lg border border-white/10">
-            <i class="lucide-upload text-[var(--accent-purple)]"></i>
-            <label for="playlistFile" class="text-xs md:text-sm font-medium cursor-pointer text-white">اسحب أو اختر ملف البلاي ليست الخاص بك (M3U):</label>
-            <input type="file" id="playlistFile" accept=".m3u,.m3u8" class="text-xs file:mr-4 file:py-1.5 file:px-3 file:rounded-full file:border-0 file:text-xs file:font-semibold file:bg-[var(--accent-purple)] file:text-white hover:file:bg-violet-700 cursor-pointer text-transparent w-48 md:w-auto">
+    <!-- Header -->
+    <header class="sticky top-0 z-40 glass-strong border-b border-white/5">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16 gap-4">
+                <!-- Logo -->
+                <div class="flex items-center gap-3 cursor-pointer" onclick="scrollToTop()">
+                    <div class="logo-container">
+                        <div class="logo-glow"></div>
+                        <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center font-black text-lg text-white shadow-lg">
+                            M
+                        </div>
+                    </div>
+                    <div>
+                        <h1 class="font-black text-lg leading-none">MOH TV</h1>
+                        <p class="text-[10px] gradient-text font-bold tracking-widest">PRO</p>
+                    </div>
+                </div>
+
+                <!-- Search bar (desktop) -->
+                <div class="hidden md:flex flex-1 max-w-md relative">
+                    <i class="lucide lucide-search absolute top-1/2 -translate-y-1/2 left-3 text-slate-500 pointer-events-none" style="font-size:18px"></i>
+                    <input
+                        id="searchInput"
+                        type="text"
+                        class="custom-input w-full pl-10 pr-4 py-2.5 rounded-xl text-sm placeholder-slate-500"
+                        placeholder="ابحث عن قناة..."
+                    >
+                    <button id="clearSearch" class="hidden absolute top-1/2 -translate-y-1/2 right-3 text-slate-500 hover:text-white transition">
+                        <i class="lucide lucide-x" style="font-size:16px"></i>
+                    </button>
+                </div>
+
+                <!-- Right controls -->
+                <div class="flex items-center gap-2">
+                    <!-- Language selector -->
+                    <div class="relative">
+                        <button id="langBtn" class="glass rounded-xl px-3 py-2.5 flex items-center gap-2 hover:bg-white/5 transition text-sm font-semibold">
+                            <i class="lucide lucide-globe" style="font-size:16px"></i>
+                            <span id="currentLang">العربية</span>
+                        </button>
+                        <div id="langDropdown" class="hidden absolute top-full mt-2 left-0 glass-strong rounded-xl p-2 min-w-[140px] z-50 shadow-2xl">
+                            <button onclick="changeLanguage('ar')" class="lang-option w-full text-right px-3 py-2 rounded-lg hover:bg-white/5 transition text-sm flex items-center gap-2" data-lang="ar">
+                                <span>🇸🇦</span> العربية
+                            </button>
+                            <button onclick="changeLanguage('en')" class="lang-option w-full text-right px-3 py-2 rounded-lg hover:bg-white/5 transition text-sm flex items-center gap-2" data-lang="en">
+                                <span>🇬🇧</span> English
+                            </button>
+                            <button onclick="changeLanguage('fr')" class="lang-option w-full text-right px-3 py-2 rounded-lg hover:bg-white/5 transition text-sm flex items-center gap-2" data-lang="fr">
+                                <span>🇫🇷</span> Français
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Admin button -->
+                    <button onclick="openAdminLogin()" class="glass rounded-xl px-3 py-2.5 flex items-center gap-2 hover:bg-white/5 transition text-sm font-semibold">
+                        <i class="lucide lucide-settings" style="font-size:16px"></i>
+                        <span class="hidden sm:inline" data-i18n="admin">لوحة الإدارة</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Search bar (mobile) -->
+            <div class="md:hidden pb-3 relative">
+                <i class="lucide lucide-search absolute top-1/2 -translate-y-1/2 left-3 text-slate-500 pointer-events-none" style="font-size:18px; top: 50%;"></i>
+                <input
+                    id="searchInputMobile"
+                    type="text"
+                    class="custom-input w-full pl-10 pr-4 py-2.5 rounded-xl text-sm placeholder-slate-500"
+                    placeholder="ابحث عن قناة..."
+                >
+            </div>
         </div>
     </header>
 
-    <main class="flex-grow container mx-auto p-4 grid grid-cols-1 md:grid-cols-3 gap-6 mt-4">
-        <div class="md:col-span-2 bg-[var(--bg-tertiary)] p-4 rounded-xl border border-white/10">
-            <h2 class="text-lg font-semibold mb-4 border-b border-white/10 pb-2">قائمة القنوات المتاحة</h2>
-            <div id="channelsList" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+    <!-- Main Content -->
+    <main class="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <!-- Hero Section -->
+        <section class="mb-10 fade-in">
+            <div class="relative rounded-3xl overflow-hidden glass p-8 sm:p-12">
+                <div class="absolute inset-0 gradient-bg opacity-5"></div>
+                <div class="relative z-10">
+                    <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full quality-badge text-xs font-semibold mb-4">
+                        <span class="w-2 h-2 rounded-full bg-green-400 pulse-dot"></span>
+                        <span data-i18n="liveBadge">بث مباشر • متصل</span>
+                    </div>
+                    <h2 class="text-3xl sm:text-5xl font-black mb-3 leading-tight">
+                        <span data-i18n="heroTitle1">شاهد العالم</span>
+                        <br>
+                        <span class="gradient-text" data-i18n="heroTitle2">علىMOH TV Pro</span>
+                    </h2>
+                    <p class="text-slate-400 text-base sm:text-lg max-w-2xl mb-6" data-i18n="heroDesc">
+                        مشغل احترافي يدعم جميع صيغ M3U و M3U8 مع إعادة اتصال تلقائي واستعادة ذكية للأخطاء
+                    </p>
+                    <div class="flex flex-wrap gap-6 text-sm">
+                        <div class="flex items-center gap-2">
+                            <i class="lucide lucide-tv text-purple-400" style="font-size:20px"></i>
+                            <span><span id="channelCountStat" class="font-bold">0</span> <span data-i18n="channels">قناة</span></span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="lucide lucide-zap text-cyan-400" style="font-size:20px"></i>
+                            <span data-i18n="autoReconnect">إعادة اتصال تلقائي</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <i class="lucide lucide-shield-check text-pink-400" style="font-size:20px"></i>
+                            <span data-i18n="mediaRecovery">استعادة الوسائط</span>
+                        </div>
+                    </div>
                 </div>
-        </div>
-
-        <div class="bg-[var(--bg-secondary)] p-4 rounded-xl border border-white/10 h-fit sticky top-4">
-            <h2 class="text-lg font-semibold mb-4">مشغل البث المباشر</h2>
-            <div class="aspect-video bg-black rounded-lg overflow-hidden relative">
-                <video id="videoPlayer" class="w-full h-full object-contain" controls autoplay playsinline></video>
             </div>
-        </div>
+        </section>
+
+        <!-- Categories -->
+        <section class="mb-8">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                    <i class="lucide lucide-layout-grid text-purple-400" style="font-size:22px"></i>
+                    <span data-i18n="categories">التصنيفات</span>
+                </h3>
+            </div>
+            <div id="categoriesContainer" class="flex gap-2 overflow-x-auto scrollbar-hide pb-2">
+                <!-- Categories will be populated by JS -->
+            </div>
+        </section>
+
+        <!-- Most Watched -->
+        <section id="mostWatchedSection" class="mb-10 hidden">
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                    <i class="lucide lucide-flame text-orange-400" style="font-size:22px"></i>
+                    <span data-i18n="mostWatched">الأكثر مشاهدة</span>
+                </h3>
+            </div>
+            <div id="mostWatchedContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <!-- Most watched channels will be populated by JS -->
+            </div>
+        </section>
+
+        <!-- All Channels -->
+        <section>
+            <div class="flex items-center justify-between mb-4">
+                <h3 class="text-xl font-bold flex items-center gap-2">
+                    <i class="lucide lucide-list text-cyan-400" style="font-size:22px"></i>
+                    <span data-i18n="allChannels">جميع القنوات</span>
+                </h3>
+                <div class="flex items-center gap-3">
+                    <span id="filteredCount" class="text-sm text-slate-400"></span>
+                    <div class="flex gap-1 glass rounded-lg p-1">
+                        <button onclick="setViewMode('grid')" id="gridViewBtn" class="p-1.5 rounded-md bg-white/10 transition">
+                            <i class="lucide lucide-layout-grid" style="font-size:16px"></i>
+                        </button>
+                        <button onclick="setViewMode('list')" id="listViewBtn" class="p-1.5 rounded-md transition">
+                            <i class="lucide lucide-list" style="font-size:16px"></i>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            <div id="channelsContainer" class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                <!-- Channels will be populated by JS -->
+            </div>
+            <div id="noChannels" class="hidden text-center py-20">
+                <div class="w-20 h-20 mx-auto rounded-full glass flex items-center justify-center mb-4">
+                    <i class="lucide lucide-tv text-slate-500" style="font-size:32px"></i>
+                </div>
+                <p class="text-slate-400 text-lg mb-2" data-i18n="noChannels">لا توجد قنوات متاحة</p>
+                <p class="text-slate-500 text-sm mb-6" data-i18n="noChannelsDesc">ارفع قائمة التشغيل الخاصة بك من لوحة الإدارة</p>
+                <button onclick="openAdminLogin()" class="btn-gradient px-6 py-3 rounded-xl font-semibold text-white inline-flex items-center gap-2">
+                    <i class="lucide lucide-upload" style="font-size:18px"></i>
+                    <span data-i18n="uploadPlaylist">رفع قائمة التشغيل</span>
+                </button>
+            </div>
+        </section>
     </main>
 
-    <footer class="bg-[var(--bg-secondary)] text-center py-4 border-t border-white/10 mt-8 text-sm text-[var(--text-secondary)]">
-        تم التصميم بواسطة MOH TV Pro
-    </footer>
+    <!-- Video Player Modal -->
+    <div id="playerModal" class="player-modal hidden-player fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="w-full max-w-5xl glass-strong rounded-2xl overflow-hidden shadow-2xl">
+            <!-- Player header -->
+            <div class="flex items-center justify-between p-4 border-b border-white/5">
+                <div class="flex items-center gap-3 min-w-0">
+                    <div id="playerChannelLogo" class="w-10 h-10 rounded-lg channel-logo-placeholder flex-shrink-0 overflow-hidden">
+                        <span class="text-purple-400 font-bold text-sm">TV</span>
+                    </div>
+                    <div class="min-w-0">
+                        <h4 id="playerChannelName" class="font-bold text-base truncate">Channel Name</h4>
+                        <div class="flex items-center gap-2 text-xs">
+                            <span id="playerStatusDot" class="w-2 h-2 rounded-full bg-yellow-400 pulse-dot"></span>
+                            <span id="playerStatusText" class="text-slate-400">جاري الاتصال...</span>
+                        </div>
+                    </div>
+                </div>
+                <button onclick="closePlayer()" class="video-control-btn p-2 rounded-lg hover:bg-white/10 transition">
+                    <i class="lucide lucide-x" style="font-size:22px"></i>
+                </button>
+            </div>
+
+            <!-- Video -->
+            <div class="video-wrapper">
+                <video id="videoPlayer" playsinline></video>
+                
+                <!-- Loading overlay -->
+                <div id="playerLoading" class="absolute inset-0 flex flex-col items-center justify-center bg-black/50 z-10">
+                    <div class="spinner mb-4"></div>
+                    <p class="text-slate-300 text-sm" data-i18n="connecting">جاري الاتصال بالخادم...</p>
+                </div>
+
+                <!-- Error overlay -->
+                <div id="playerError" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-black/70 z-10 p-4">
+                    <div class="w-16 h-16 rounded-full bg-red-500/20 flex items-center justify-center mb-4">
+                        <i class="lucide lucide-alert-triangle text-red-400" style="font-size:28px"></i>
+                    </div>
+                    <p id="playerErrorText" class="text-white font-bold mb-2 text-center">خطأ في تشغيل القناة</p>
+                    <p id="playerErrorDetail" class="text-slate-400 text-sm mb-4 text-center"></p>
+                    <button onclick="retryCurrentChannel()" class="btn-gradient px-5 py-2.5 rounded-xl font-semibold text-white inline-flex items-center gap-2">
+                        <i class="lucide lucide-refresh-cw" style="font-size:16px"></i>
+                        <span data-i18n="retry">إعادة المحاولة</span>
+                    </button>
+                </div>
+
+                <!-- Reconnect overlay -->
+                <div id="playerReconnect" class="hidden absolute inset-0 flex flex-col items-center justify-center bg-black/70 z-10 p-4">
+                    <div class="w-16 h-16 rounded-full bg-yellow-500/20 flex items-center justify-center mb-4">
+                        <i class="lucide lucide-wifi-off text-yellow-400" style="font-size:28px"></i>
+                    </div>
+                    <p class="text-white font-bold mb-1" data-i18n="reconnecting">جاري إعادة الاتصال</p>
+                    <p id="reconnectCounter" class="text-yellow-400 text-sm mb-4">المحاولة 1 من 10</p>
+                    <div class="w-48 h-1 bg-white/10 rounded-full overflow-hidden">
+                        <div id="reconnectProgress" class="h-full gradient-bg transition-all duration-1000" style="width: 0%"></div>
+                    </div>
+                </div>
+
+                <!-- Video controls bar -->
+                <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-4 z-20">
+                    <div class="flex items-center justify-between gap-3">
+                        <div class="flex items-center gap-2">
+                            <button id="playPauseBtn" onclick="togglePlayPause()" class="video-control-btn p-2.5 rounded-lg text-white">
+                                <i class="lucide lucide-pause" style="font-size:20px"></i>
+                            </button>
+                            <button onclick="toggleMute()" id="muteBtn" class="video-control-btn p-2.5 rounded-lg text-white">
+                                <i class="lucide lucide-volume-2" style="font-size:20px"></i>
+                            </button>
+                            <div class="flex items-center gap-2 group">
+                                <input type="range" id="volumeSlider" min="0" max="100" value="100" class="w-0 group-hover:w-20 transition-all duration-300 accent-purple-500">
+                            </div>
+                        </div>
+
+                        <div class="flex items-center gap-2">
+                            <!-- Quality selector -->
+                            <div class="relative">
+                                <button id="qualityBtn" onclick="toggleQualityMenu()" class="video-control-btn px-3 py-2 rounded-lg text-white text-sm font-semibold flex items-center gap-1">
+                                    <i class="lucide lucide-settings-2" style="font-size:16px"></i>
+                                    <span id="currentQuality">Auto</span>
+                                </button>
+                                <div id="qualityMenu" class="hidden absolute bottom-full mb-2 right-0 glass-strong rounded-xl p-2 min-w-[120px] shadow-2xl">
+                                    <!-- Quality options will be populated by JS -->
+                                </div>
+                            </div>
+                            
+                            <button onclick="toggleFullscreen()" class="video-control-btn p-2.5 rounded-lg text-white">
+                                <i class="lucide lucide-maximize" style="font-size:20px"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Player info -->
+            <div class="p-4 flex items-center justify-between text-sm">
+                <div class="flex items-center gap-4 text-slate-400">
+                    <span class="flex items-center gap-1.5">
+                        <i class="lucide lucide-signal text-green-400" style="font-size:14px"></i>
+                        <span data-i18n="liveStream">بث مباشر</span>
+                    </span>
+                    <span id="playerCategory" class="hidden sm:flex items-center gap-1.5">
+                        <i class="lucide lucide-tag text-purple-400" style="font-size:14px"></i>
+                        <span></span>
+                    </span>
+                </div>
+                <div class="flex items-center gap-2">
+                    <button onclick="retryCurrentChannel()" class="text-slate-400 hover:text-white transition flex items-center gap-1.5 text-xs">
+                        <i class="lucide lucide-refresh-cw" style="font-size:14px"></i>
+                        <span data-i18n="reload">إعادة تحميل</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Login Modal -->
+    <div id="adminLoginModal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+        <div class="w-full max-w-md glass-strong rounded-2xl overflow-hidden shadow-2xl">
+            <div class="p-6 border-b border-white/5 flex items-center justify-between">
+                <div class="flex items-center gap-3">
+                    <div class="w-10 h-10 rounded-xl gradient-bg-2 flex items-center justify-center">
+                        <i class="lucide lucide-shield text-white" style="font-size:20px"></i>
+                    </div>
+                    <div>
+                        <h3 class="font-bold text-lg" data-i18n="adminLogin">تسجيل دخول الإدارة</h3>
+                        <p class="text-xs text-slate-400" data-i18n="adminLoginDesc">منطقة محمية - للمسؤولين فقط</p>
+                    </div>
+                </div>
+                <button onclick="closeAdminLogin()" class="video-control-btn p-2 rounded-lg hover:bg-white/10 transition">
+                    <i class="lucide lucide-x" style="font-size:20px"></i>
+                </button>
+            </div>
+            <div class="p-6 space-y-4">
+                <div>
+                    <label class="text-sm text-slate-400 mb-2 block" data-i18n="password">كلمة المرور</label>
+                    <div class="relative">
+                        <i class="lucide lucide-lock absolute top-1/2 -translate-y-1/2 left-3 text-slate-500" style="font-size:18px"></i>
+                        <input id="adminPasswordInput" type="password" class="custom-input w-full pl-10 pr-10 py-3 rounded-xl text-sm" placeholder="••••••••" onkeypress="if(event.key==='Enter') attemptLogin()">
+                        <button onclick="togglePasswordVisibility('adminPasswordInput', this)" class="absolute top-1/2 -translate-y-1/2 right-3 text-slate-500 hover:text-white transition">
+                            <i class="lucide lucide-eye" style="font-size:18px"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="loginError" class="hidden text-red-400 text-sm flex items-center gap-2">
+                    <i class="lucide lucide-alert-circle" style="font-size:16px"></i>
+                    <span data-i18n="loginError">كلمة المرور غير صحيحة</span>
+                </div>
+                <button onclick="attemptLogin()" class="btn-gradient w-full py-3 rounded-xl font-bold text-white flex items-center justify-center gap-2">
+                    <i class="lucide lucide-log-in" style="font-size:18px"></i>
+                    <span data-i18n="login">دخول</span>
+                </button>
+                <p class="text-xs text-slate-500 text-center" data-i18n="defaultPassHint">كلمة المرور الافتراضية: admin123</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Dashboard -->
+    <div id="adminDashboard" class="hidden fixed inset-0 z-50 bg-[#07070d] overflow-y-auto">
+        <div class="flex min-h-screen">
+            <!-- Sidebar -->
+            <aside class="w-64 glass-strong border-l border-white/5 hidden md:flex flex-col fixed inset-y-0 rtl:border-l-0 rtl:border-r" style="inset-inline-start: 0;">
+                <div class="p-6 border-b border-white/5">
+                    <div class="flex items-center gap-3">
+                        <div class="logo-container">
+                            <div class="logo-glow"></div>
+                            <div class="w-10 h-10 rounded-xl gradient-bg flex items-center justify-center font-black text-lg text-white shadow-lg">M</div>
+                        </div>
+                        <div>
+                            <h1 class="font-black text-lg leading-none">MOH TV</h1>
+                            <p class="text-[10px] gradient-text font-bold tracking-widest">ADMIN PANEL</p>
+                        </div>
+                    </div>
+                </div>
+                <nav class="flex-1 p-4 space-y-1">
+                    <button onclick="showAdminTab('dashboard')" class="admin-sidebar-item active w-full text-right px-4 py-3 rounded-xl flex items-center gap-3 text-sm hover:bg-white/5 transition" data-tab="dashboard">
+                        <i class="lucide lucide-layout-dashboard" style="font-size:18px"></i>
+                        <span data-i18n="dashboard">لوحة التحكم</span>
+                    </button>
+                    <button onclick="showAdminTab('channels')" class="admin-sidebar-item w-full text-right px-4 py-3 rounded-xl flex items-center gap-3 text-sm hover:bg-white/5 transition" data-tab="channels">
+                        <i class="lucide lucide-tv" style="font-size:18px"></i>
+                        <span data-i18n="manageChannels">إدارة القنوات</span>
+                    </button>
+                    <button onclick="showAdminTab('upload')" class="admin-sidebar-item w-full text-right px-4 py-3 rounded-xl flex items-center gap-3 text-sm hover:bg-white/5 transition" data-tab="upload">
+                        <i class="lucide lucide-upload-cloud" style="font-size:18px"></i>
+                        <span data-i18n="uploadPlaylist2">رفع قائمة التشغيل</span>
+                    </button>
+                    <button onclick="showAdminTab('importlog')" class="admin-sidebar-item w-full text-right px-4 py-3 rounded-xl flex items-center gap-3 text-sm hover:bg-white/5 transition" data-tab="importlog">
+                        <i class="lucide lucide-history" style="font-size:18px"></i>
+                        <span data-i18n="importLog">سجل الاستيراد</span>
+                    </button>
+                    <button onclick="showAdminTab('settings')" class="admin-sidebar-item w-full text-right px-4 py-3 rounded-xl flex items-center gap-3 text-sm hover:bg-white/5 transition" data-tab="settings">
+                        <i class="lucide lucide-settings" style="font-size:18px"></i>
+                        <span data-i18n="settings">الإعدادات</span>
+                    </button>
+                </nav>
+                <div class="p-4 border-t border-white/5">
+                    <button onclick="logoutAdmin()" class="w-full text-right px-4 py-3 rounded-xl flex items-center gap-3 text-sm text-red-400 hover:bg-red-500/10 transition">
+                        <i class="lucide lucide-log-out" style="font-size:18px"></i>
+                        <span data-i18n="logout">تسجيل الخروج</span>
+                    </button>
+                </div>
+            </aside>
+
+            <!-- Mobile admin nav -->
+            <div class="md:hidden fixed top-0 left-0 right-0 z-50 glass-strong border-b border-white/5 p-4 flex items-center justify-between">
+                <div class="flex items-center gap-2">
+                    <div class="w-8 h-8 rounded-lg gradient-bg flex items-center justify-center font-black text-sm text-white">M</div>
+                    <span class="font-bold">MOH TV Admin</span>
+                </div>
+                <div class="flex gap-2">
+                    <button onclick="logoutAdmin()" class="p-2 rounded-lg text-red-400 hover:bg-red-500/10 transition">
+                        <i class="lucide lucide-log-out" style="font-size:18px"></i>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Mobile admin tab bar -->
+            <div class="md:hidden fixed top-16 left-0 right-0 z-40 glass-strong border-b border-white/5">
+                <div class="flex overflow-x-auto scrollbar-hide">
+                    <button onclick="showAdminTab('dashboard')" class="admin-tab-btn active px-4 py-3 text-xs font-semibold whitespace-nowrap border-b-2 border-purple-500" data-tab="dashboard" data-i18n="dashboard">لوحة التحكم</button>
+                    <button onclick="showAdminTab('channels')" class="admin-tab-btn px-4 py-3 text-xs font-semibold whitespace-nowrap border-b-2 border-transparent text-slate-400" data-tab="channels" data-i18n="manageChannels">القنوات</button>
+                    <button onclick="showAdminTab('upload')" class="admin-tab-btn px-4 py-3 text-xs font-semibold whitespace-nowrap border-b-2 border-transparent text-slate-400" data-tab="upload" data-i18n="uploadPlaylist2">رفع</button>
+                    <button onclick="showAdminTab('importlog')" class="admin-tab-btn px-4 py-3 text-xs font-semibold whitespace-nowrap border-b-2 border-transparent text-slate-400" data-tab="importlog" data-i18n="importLog">السجل</button>
+                    <button onclick="showAdminTab('settings')" class="admin-tab-btn px-4 py-3 text-xs font-semibold whitespace-nowrap border-b-2 border-transparent text-slate-400" data-tab="settings" data-i18n="settings">الإعدادات</button>
+                </div>
+            </div>
+
+            <!-- Main content -->
+            <div class="flex-1 md:ms-64 pt-28 md:pt-6 p-4 sm:p-6 lg:p-8 overflow-y-auto" style="margin-inline-start: 0;">
+                <!-- Dashboard Tab -->
+                <div id="adminTab-dashboard" class="admin-tab-content">
+                    <h2 class="text-2xl font-black mb-6" data-i18n="dashboard">لوحة التحكم</h2>
+                    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-8">
+                        <div class="stats-card glass rounded-2xl p-5">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-purple-500/20 flex items-center justify-center">
+                                    <i class="lucide lucide-tv text-purple-400" style="font-size:20px"></i>
+                                </div>
+                            </div>
+                            <p id="statTotalChannels" class="text-3xl font-black">0</p>
+                            <p class="text-sm text-slate-400" data-i18n="totalChannels">إجمالي القنوات</p>
+                        </div>
+                        <div class="stats-card glass rounded-2xl p-5">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-cyan-500/20 flex items-center justify-center">
+                                    <i class="lucide lucide-layout-grid text-cyan-400" style="font-size:20px"></i>
+                                </div>
+                            </div>
+                            <p id="statCategories" class="text-3xl font-black">0</p>
+                            <p class="text-sm text-slate-400" data-i18n="totalCategories">التصنيفات</p>
+                        </div>
+                        <div class="stats-card glass rounded-2xl p-5">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-pink-500/20 flex items-center justify-center">
+                                    <i class="lucide lucide-eye text-pink-400" style="font-size:20px"></i>
+                                </div>
+                            </div>
+                            <p id="statViews" class="text-3xl font-black">0</p>
+                            <p class="text-sm text-slate-400" data-i18n="totalViews">إجمالي المشاهدات</p>
+                        </div>
+                        <div class="stats-card glass rounded-2xl p-5">
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="w-10 h-10 rounded-xl bg-orange-500/20 flex items-center justify-center">
+                                    <i class="lucide lucide-upload text-orange-400" style="font-size:20px"></i>
+                                </div>
+                            </div>
+                            <p id="statImports" class="text-3xl font-black">0</p>
+                            <p class="text-sm text-slate-400" data-i18n="totalImports">عمليات الاستيراد</p>
+                        </div>
+                    </div>
+
+                    <div class="grid lg:grid-cols-2 gap-6">
+                        <div class="glass rounded-2xl p-6">
+                            <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                                <i class="lucide lucide-flame text-orange-400" style="font-size:20px"></i>
+                                <span data-i18n="topWatched">الأكثر مشاهدة</span>
+                            </h3>
+                            <div id="adminTopWatched" class="space-y-3">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                        <div class="glass rounded-2xl p-6">
+                            <h3 class="font-bold text-lg mb-4 flex items-center gap-2">
+                                <i class="lucide lucide-clock-history text-cyan-400" style="font-size:20px"></i>
+                                <span data-i18n="recentImports">آخر الاستيرادات</span>
+                            </h3>
+                            <div id="adminRecentImports" class="space-y-3">
+                                <!-- Populated by JS -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Channels Tab -->
+                <div id="adminTab-channels" class="admin-tab-content hidden">
+                    <div class="flex items-center justify-between mb-6 flex-wrap gap-4">
+                        <h2 class="text-2xl font-black" data-i18n="manageChannels">إدارة القنوات</h2>
+                        <div class="flex gap-2">
+                            <input id="adminChannelSearch" type="text" class="custom-input px-4 py-2.5 rounded-xl text-sm w-64" placeholder="بحث..." oninput="renderAdminChannels()">
+                            <button onclick="exportChannels()" class="glass px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-white/5 transition flex items-center gap-2">
+                                <i class="lucide lucide-download" style="font-size:16px"></i>
+                                <span class="hidden sm:inline" data-i18n="export">تصدير</span>
+                            </button>
+                            <button onclick="clearAllChannels()" class="glass px-4 py-2.5 rounded-xl text-sm font-semibold text-red-400 hover:bg-red-500/10 transition flex items-center gap-2">
+                                <i class="lucide lucide-trash-2" style="font-size:16px"></i>
+                                <span class="hidden sm:inline" data-i18n="clearAll">حذف الكل</span>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="glass rounded-2xl overflow-hidden">
+                        <div class="overflow-x-auto">
+                            <table class="w-full">
+                                <thead class="border-b border-white/5">
+                                    <tr class="text-sm text-slate-400">
+                                        <th class="text-right p-4 font-semibold" data-i18n="channel">القناة</th>
+                                        <th class="text-right p-4 font-semibold hidden sm:table-cell" data-i18n="category">التصنيف</th>
+                                        <th class="text-right p-4 font-semibold hidden md:table-cell" data-i18n="views">المشاهدات</th>
+                                        <th class="text-right p-4 font-semibold" data-i18n="actions">إجراءات</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="adminChannelsList">
+                                    <!-- Populated by JS -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Upload Tab -->
+                <div id="adminTab-upload" class="admin-tab-content hidden">
+                    <h2 class="text-2xl font-black mb-6" data-i18n="uploadPlaylist2">رفع قائمة التشغيل</h2>
+                    <div class="grid lg:grid-cols-2 gap-6">
+                        <div>
+                            <div id="dragZone" class="drag-zone glass rounded-2xl p-8 text-center cursor-pointer" onclick="document.getElementById('m3uFileInput').click()">
+                                <div class="w-20 h-20 mx-auto rounded-2xl gradient-bg flex items-center justify-center mb-4">
+                                    <i class="lucide lucide-upload-cloud text-white" style="font-size:36px"></i>
+                                </div>
+                                <h3 class="font-bold text-lg mb-2" data-i18n="dropFile">اسحب وأفلت ملف M3U / M3U8</h3>
+                                <p class="text-slate-400 text-sm mb-4" data-i18n="orClick">أو انقر للاختيار من جهازك</p>
+                                <p class="text-slate-500 text-xs" data-i18n="supportedFormats">الصيغ المدعومة: .m3u, .m3u8, .txt</p>
+                                <input type="file" id="m3uFileInput" accept=".m3u,.m3u8,.txt" class="hidden" onchange="handleFileUpload(event)">
+                            </div>
+
+                            <div class="glass rounded-2xl p-6 mt-4">
+                                <h4 class="font-bold mb-3 flex items-center gap-2">
+                                    <i class="lucide lucide-link text-cyan-400" style="font-size:18px"></i>
+                                    <span data-i18n="importFromUrl">استيراد من رابط</span>
+                                </h4>
+                                <div class="flex gap-2">
+                                    <input id="m3uUrlInput" type="text" class="custom-input flex-1 px-4 py-2.5 rounded-xl text-sm" placeholder="https://example.com/playlist.m3u">
+                                    <button onclick="importFromUrl()" class="btn-gradient px-4 py-2.5 rounded-xl text-sm font-bold text-white flex items-center gap-2">
+                                        <i class="lucide lucide-download" style="font-size:16px"></i>
+                                        <span data-i18n="import">استيراد</span>
+                                    </button>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-2" data-i18n="urlHint">ألصق رابط قائمة تشغيل M3U مباشرة</p>
+                            </div>
+                        </div>
+
+                        <div class="glass rounded-2xl p-6">
+                            <h4 class="font-bold mb-4 flex items-center gap-2">
+                                <i class="lucide lucide-sparkles text-purple-400" style="font-size:18px"></i>
+                                <span data-i18n="autoProcessing">المعالجة التلقائية</span>
+                            </h4>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-3 rounded-xl bg-white/3">
+                                    <div class="flex items-center gap-3">
+                                        <i class="lucide lucide-filter text-green-400" style="font-size:18px"></i>
+                                        <div>
+                                            <p class="text-sm font-semibold" data-i18n="removeAds">حذف الأسطر الإعلانية</p>
+                                            <p class="text-xs text-slate-500" data-i18n="removeAdsDesc">إزالة القنوات الإعلانية تلقائياً</p>
+                                        </div>
+                                    </div>
+                                    <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+                                </div>
+                                <div class="flex items-center justify-between p-3 rounded-xl bg-white/3">
+                                    <div class="flex items-center gap-3">
+                                        <i class="lucide lucide-copy text-cyan-400" style="font-size:18px"></i>
+                                        <div>
+                                            <p class="text-sm font-semibold" data-i18n="removeDuplicates">إزالة القنوات المكررة</p>
+                                            <p class="text-xs text-slate-500" data-i18n="removeDuplicatesDesc">حذف التكرارات حسب الاسم والرابط</p>
+                                        </div>
+                                    </div>
+                                    <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+                                </div>
+                                <div class="flex items-center justify-between p-3 rounded-xl bg-white/3">
+                                    <div class="flex items-center gap-3">
+                                        <i class="lucide lucide-tag text-purple-400" style="font-size:18px"></i>
+                                        <div>
+                                            <p class="text-sm font-semibold" data-i18n="extractInfo">استخراج البيانات</p>
+                                            <p class="text-xs text-slate-500" data-i18n="extractInfoDesc">الاسم، الشعار، التصنيف، الرابط</p>
+                                        </div>
+                                    </div>
+                                    <div class="toggle-switch active" onclick="this.classList.toggle('active')"></div>
+                                </div>
+                                <div class="flex items-center justify-between p-3 rounded-xl bg-white/3">
+                                    <div class="flex items-center gap-3">
+                                        <i class="lucide lucide-refresh-cw text-pink-400" style="font-size:18px"></i>
+                                        <div>
+                                            <p class="text-sm font-semibold" data-i18n="replaceExisting">استبدال القائمة الحالية</p>
+                                            <p class="text-xs text-slate-500" data-i18n="replaceExistingDesc">حذف القنوات القديمة قبل الاستيراد</p>
+                                        </div>
+                                    </div>
+                                    <div class="toggle-switch" id="replaceToggle" onclick="this.classList.toggle('active')"></div>
+                                </div>
+                            </div>
+                            <div class="mt-4 p-3 rounded-xl quality-badge text-xs flex items-start gap-2">
+                                <i class="lucide lucide-info mt-0.5" style="font-size:14px"></i>
+                                <p data-i18n="uploadNote">سيتم استخراج القنوات تلقائياً وتحديث الموقع فوراً دون أي تعديل يدوي</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Import Log Tab -->
+                <div id="adminTab-importlog" class="admin-tab-content hidden">
+                    <h2 class="text-2xl font-black mb-6" data-i18n="importLog">سجل الاستيراد</h2>
+                    <div id="importLogContainer" class="space-y-3">
+                        <!-- Populated by JS -->
+                    </div>
+                </div>
+
+                <!-- Settings Tab -->
+                <div id="adminTab-settings" class="admin-tab-content hidden">
+                    <h2 class="text-2xl font-black mb-6" data-i18n="settings">الإعدادات</h2>
+                    <div class="max-w-2xl space-y-4">
+                        <div class="glass rounded-2xl p-6">
+                            <h3 class="font-bold text-lg mb-4" data-i18n="securitySettings">إعدادات الأمان</h3>
+                            <div class="space-y-4">
+                                <div>
+                                    <label class="text-sm text-slate-400 mb-2 block" data-i18n="changePassword">تغيير كلمة المرور</label>
+                                    <div class="relative">
+                                        <i class="lucide lucide-lock absolute top-1/2 -translate-y-1/2 left-3 text-slate-500" style="font-size:18px"></i>
+                                        <input id="newPasswordInput" type="password" class="custom-input w-full pl-10 pr-4 py-3 rounded-xl text-sm" placeholder="كلمة مرور جديدة">
+                                    </div>
+                                </div>
+                                <button onclick="changePassword()" class="btn-gradient px-5 py-2.5 rounded-xl font-semibold text-white text-sm flex items-center gap-2">
+                                    <i class="lucide lucide-save" style="font-size:16px"></i>
+                                    <span data-i18n="savePassword">حفظ كلمة المرور</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <div class="glass rounded-2xl p-6">
+                            <h3 class="font-bold text-lg mb-4" data-i18n="playerSettings">إعدادات المشغل</h3>
+                            <div class="space-y-3">
+                                <div class="flex items-center justify-between p-3 rounded-xl bg-white/3">
+                                    <div class="flex items-center gap-3">
+                                        <i class="lucide lucide-refresh-cw text-green-400" style="font-size:18px"></i>
+                                        <div>
+                                            <p class="text-sm font-semibold" data-i18n="autoReconnectSetting">إعادة الاتصال التلقائي</p>
+                                            <p class="text-xs text-slate-500" data-i18n="autoReconnectDesc">إعادة الاتصال عند انقطاع الشبكة</p>
+                                        </div>
+                                    </div>
+                                    <div class="toggle-switch active" id="autoReconnectToggle" onclick="this.classList.toggle('active')"></div>
+                                </div>
+                                <div class="flex items-center justify-between p-3 rounded-xl bg-white/3">
+                                    <div class="flex items-center gap-3">
+                                        <i class="lucide lucide-shield-check text-cyan-400" style="font-size:18px"></i>
+                                        <div>
+                                            <p class="text-sm font-semibold" data-i18n="mediaRecoverySetting">استعادة الوسائط</p>
+                                            <p class="text-xs text-slate-500" data-i18n="mediaRecoveryDesc">استعادة البث بعد أخطاء الوسائط</p>
+                                        </div>
+                                    </div>
+                                    <div class="toggle-switch active" id="mediaRecoveryToggle" onclick="this.classList.toggle('active')"></div>
+                                </div>
+                                <div class="flex items-center justify-between p-3 rounded-xl bg-white/3">
+                                    <div class="flex items-center gap-3">
+                                        <i class="lucide lucide-repeat text-purple-400" style="font-size:18px"></i>
+                                        <div>
+                                            <p class="text-sm font-semibold" data-i18n="reloadOnEnd">إعادة التحميل عند انتهاء القائمة</p>
+                                            <p class="text-xs text-slate-500" data-i18n="reloadOnEndDesc">إعادة تحميل القناة إذا انتهت قائمة البث</p>
+                                        </div>
+                                    </div>
+                                    <div class="toggle-switch active" id="reloadOnEndToggle" onclick="this.classList.toggle('active')"></div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="glass rounded-2xl p-6">
+                            <h3 class="font-bold text-lg mb-4" data-i18n="dataManagement">إدارة البيانات</h3>
+                            <div class="flex flex-wrap gap-3">
+                                <button onclick="exportChannels()" class="glass px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-white/5 transition flex items-center gap-2">
+                                    <i class="lucide lucide-download" style="font-size:16px"></i>
+                                    <span data-i18n="exportChannels">تصدير القنوات</span>
+                                </button>
+                                <button onclick="clearWatchStats()" class="glass px-4 py-2.5 rounded-xl text-sm font-semibold hover:bg-white/5 transition flex items-center gap-2">
+                                    <i class="lucide lucide-eraser" style="font-size:16px"></i>
+                                    <span data-i18n="clearStats">مسح الإحصائيات</span>
+                                </button>
+                                <button onclick="resetAllData()" class="glass px-4 py-2.5 rounded-xl text-sm font-semibold text-red-400 hover:bg-red-500/10 transition flex items-center gap-2">
+                                    <i class="lucide lucide-alert-triangle" style="font-size:16px"></i>
+                                    <span data-i18n="resetAll">إعادة تعيين الكل</span>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer" class="fixed top-20 right-4 z-[100] space-y-2" style="inset-inline-end: 1rem;"></div>
 
     <script>
-        // القنوات الافتراضية (تظهر مباشرة للمستخدم بدون إجباره على رفع أي ملف)
-        const defaultChannels = [
-            {
-                id: "ch_quran",
-                name: "Saudi Quran",
-                url: "http://fueg-01.xyz:80/live/2370353253/esldgs57qoigmzxzmn2s/169.m3u8",
-                category: "ISLAM TV",
-                logo: "http://138.199.27.237:8080/ASIA/SAUDIARABIA/SAUDIQURAN.png"
+        // ==================== TRANSLATIONS ====================
+        const translations = {
+            ar: {
+                admin: 'لوحة الإدارة',
+                liveBadge: 'بث مباشر • متصل',
+                heroTitle1: 'شاهد العالم',
+                heroTitle2: 'على MOH TV Pro',
+                heroDesc: 'مشغل احترافي يدعم جميع صيغ M3U و M3U8 مع إعادة اتصال تلقائي واستعادة ذكية للأخطاء',
+                channels: 'قناة',
+                autoReconnect: 'إعادة اتصال تلقائي',
+                mediaRecovery: 'استعادة الوسائط',
+                categories: 'التصنيفات',
+                mostWatched: 'الأكثر مشاهدة',
+                allChannels: 'جميع القنوات',
+                noChannels: 'لا توجد قنوات متاحة',
+                noChannelsDesc: 'ارفع قائمة التشغيل الخاصة بك من لوحة الإدارة',
+                uploadPlaylist: 'رفع قائمة التشغيل',
+                connecting: 'جاري الاتصال بالخادم...',
+                reconnecting: 'جاري إعادة الاتصال',
+                retry: 'إعادة المحاولة',
+                liveStream: 'بث مباشر',
+                reload: 'إعادة تحميل',
+                adminLogin: 'تسجيل دخول الإدارة',
+                adminLoginDesc: 'منطقة محمية - للمسؤولين فقط',
+                password: 'كلمة المرور',
+                loginError: 'كلمة المرور غير صحيحة',
+                login: 'دخول',
+                defaultPassHint: 'كلمة المرور الافتراضية: admin123',
+                dashboard: 'لوحة التحكم',
+                manageChannels: 'إدارة القنوات',
+                uploadPlaylist2: 'رفع قائمة التشغيل',
+                importLog: 'سجل الاستيراد',
+                settings: 'الإعدادات',
+                logout: 'تسجيل الخروج',
+                totalChannels: 'إجمالي القنوات',
+                totalCategories: 'التصنيفات',
+                totalViews: 'إجمالي المشاهدات',
+                totalImports: 'عمليات الاستيراد',
+                topWatched: 'الأكثر مشاهدة',
+                recentImports: 'آخر الاستيرادات',
+                channel: 'القناة',
+                category: 'التصنيف',
+                views: 'المشاهدات',
+                actions: 'إجراءات',
+                export: 'تصدير',
+                clearAll: 'حذف الكل',
+                dropFile: 'اسحب وأفلت ملف M3U / M3U8',
+                orClick: 'أو انقر للاختيار من جهازك',
+                supportedFormats: 'الصيغ المدعومة: .m3u, .m3u8, .txt',
+                importFromUrl: 'استيراد من رابط',
+                import: 'استيراد',
+                urlHint: 'ألصق رابط قائمة تشغيل M3U مباشرة',
+                autoProcessing: 'المعالجة التلقائية',
+                removeAds: 'حذف الأسطر الإعلانية',
+                removeAdsDesc: 'إزالة القنوات الإعلانية تلقائياً',
+                removeDuplicates: 'إزالة القنوات المكررة',
+                removeDuplicatesDesc: 'حذف التكرارات حسب الاسم والرابط',
+                extractInfo: 'استخراج البيانات',
+                extractInfoDesc: 'الاسم، الشعار، التصنيف، الرابط',
+                replaceExisting: 'استبدال القائمة الحالية',
+                replaceExistingDesc: 'حذف القنوات القديمة قبل الاستيراد',
+                uploadNote: 'سيتم استخراج القنوات تلقائياً وتحديث الموقع فوراً دون أي تعديل يدوي',
+                securitySettings: 'إعدادات الأمان',
+                changePassword: 'تغيير كلمة المرور',
+                savePassword: 'حفظ كلمة المرور',
+                playerSettings: 'إعدادات المشغل',
+                autoReconnectSetting: 'إعادة الاتصال التلقائي',
+                autoReconnectDesc: 'إعادة الاتصال عند انقطاع الشبكة',
+                mediaRecoverySetting: 'استعادة الوسائط',
+                mediaRecoveryDesc: 'استعادة البث بعد أخطاء الوسائط',
+                reloadOnEnd: 'إعادة التحميل عند انتهاء القائمة',
+                reloadOnEndDesc: 'إعادة تحميل القناة إذا انتهت قائمة البث',
+                dataManagement: 'إدارة البيانات',
+                exportChannels: 'تصدير القنوات',
+                clearStats: 'مسح الإحصائيات',
+                resetAll: 'إعادة تعيين الكل',
+                all: 'الكل',
+                searchPlaceholder: 'ابحث عن قناة...',
+                noResults: 'لا توجد نتائج',
+                watching: 'يشاهد الآن',
+                connected: 'متصل',
+                error: 'خطأ',
+                mediaError: 'خطأ في الوسائط - جاري الاستعادة',
+                networkError: 'خطأ في الشبكة - جاري إعادة الاتصال',
+                fatalError: 'خطأ غير قابل للاستعادة',
+                imported: 'تم استيراد',
+                channels2: 'قناة',
+                deleted: 'تم الحذف',
+                hidden: 'مخفي',
+                shown: 'ظاهر',
+                edit: 'تعديل',
+                delete: 'حذف',
+                hide: 'إخفاء',
+                show: 'إظهار',
+                save: 'حفظ',
+                cancel: 'إلغاء',
+                confirmDelete: 'هل أنت متأكد من الحذف؟',
+                confirmClearAll: 'هل أنت متأكد من حذف جميع القنوات؟',
+                confirmReset: 'هل أنت متأكد من إعادة تعيين كل البيانات؟ سيتم فقدان جميع القنوات والإعدادات.',
+                passwordChanged: 'تم تغيير كلمة المرور بنجاح',
+                importSuccess: 'تم استيراد القنوات بنجاح',
+                importFailed: 'فشل استيراد القائمة',
+                noImportLog: 'لا يوجد سجل استيراد',
+                quality: 'الجودة',
+                auto: 'تلقائي',
+                volume: 'الصوت',
+                muted: 'كتم الصوت',
+                unmuted: 'تشغيل الصوت',
+                fullscreen: 'ملء الشاشة',
+                exitFullscreen: 'إنهاء ملء الشاشة',
+                playing: 'يعمل الآن',
+                paused: 'متوقف مؤقتاً',
+                attempt: 'المحاولة',
+                of: 'من',
+                addedFromUrl: 'تمت الإضافة من رابط',
+                addedFromFile: 'تمت الإضافة من ملف'
             },
-            {
-                id: "ch_alwan6",
-                name: "Alwan Sport 6 SD",
-                url: "http://fueg-01.xyz:80/live/2370353253/esldgs57qoigmzxzmn2s/1641629.m3u8",
-                category: "ALWAN SPORT",
-                logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuhH7QXR24YA4PeJNfQRsxALFC3Sbaw_fhpg&s"
+            en: {
+                admin: 'Admin Panel',
+                liveBadge: 'Live • Connected',
+                heroTitle1: 'Watch the World',
+                heroTitle2: 'on MOH TV Pro',
+                heroDesc: 'Professional player supporting all M3U and M3U8 formats with auto-reconnect and smart media recovery',
+                channels: 'Channels',
+                autoReconnect: 'Auto Reconnect',
+                mediaRecovery: 'Media Recovery',
+                categories: 'Categories',
+                mostWatched: 'Most Watched',
+                allChannels: 'All Channels',
+                noChannels: 'No channels available',
+                noChannelsDesc: 'Upload your playlist from the admin panel',
+                uploadPlaylist: 'Upload Playlist',
+                connecting: 'Connecting to server...',
+                reconnecting: 'Reconnecting',
+                retry: 'Retry',
+                liveStream: 'Live Stream',
+                reload: 'Reload',
+                adminLogin: 'Admin Login',
+                adminLoginDesc: 'Protected area - Admins only',
+                password: 'Password',
+                loginError: 'Incorrect password',
+                login: 'Login',
+                defaultPassHint: 'Default password: admin123',
+                dashboard: 'Dashboard',
+                manageChannels: 'Manage Channels',
+                uploadPlaylist2: 'Upload Playlist',
+                importLog: 'Import Log',
+                settings: 'Settings',
+                logout: 'Logout',
+                totalChannels: 'Total Channels',
+                totalCategories: 'Categories',
+                totalViews: 'Total Views',
+                totalImports: 'Total Imports',
+                topWatched: 'Top Watched',
+                recentImports: 'Recent Imports',
+                channel: 'Channel',
+                category: 'Category',
+                views: 'Views',
+                actions: 'Actions',
+                export: 'Export',
+                clearAll: 'Clear All',
+                dropFile: 'Drag & drop M3U / M3U8 file',
+                orClick: 'or click to select from your device',
+                supportedFormats: 'Supported formats: .m3u, .m3u8, .txt',
+                importFromUrl: 'Import from URL',
+                import: 'Import',
+                urlHint: 'Paste a direct M3U playlist URL',
+                autoProcessing: 'Auto Processing',
+                removeAds: 'Remove Ad Lines',
+                removeAdsDesc: 'Automatically remove ad channels',
+                removeDuplicates: 'Remove Duplicates',
+                removeDuplicatesDesc: 'Remove duplicates by name and URL',
+                extractInfo: 'Extract Info',
+                extractInfoDesc: 'Name, logo, category, URL',
+                replaceExisting: 'Replace Existing List',
+                replaceExistingDesc: 'Delete old channels before import',
+                uploadNote: 'Channels will be extracted automatically and the site updated instantly without manual editing',
+                securitySettings: 'Security Settings',
+                changePassword: 'Change Password',
+                savePassword: 'Save Password',
+                playerSettings: 'Player Settings',
+                autoReconnectSetting: 'Auto Reconnect',
+                autoReconnectDesc: 'Reconnect on network disconnection',
+                mediaRecoverySetting: 'Media Recovery',
+                mediaRecoveryDesc: 'Recover stream after media errors',
+                reloadOnEnd: 'Reload on Playlist End',
+                reloadOnEndDesc: 'Reload channel when playlist ends',
+                dataManagement: 'Data Management',
+                exportChannels: 'Export Channels',
+                clearStats: 'Clear Statistics',
+                resetAll: 'Reset All Data',
+                all: 'All',
+                searchPlaceholder: 'Search channel...',
+                noResults: 'No results found',
+                watching: 'Watching now',
+                connected: 'Connected',
+                error: 'Error',
+                mediaError: 'Media error - recovering',
+                networkError: 'Network error - reconnecting',
+                fatalError: 'Unrecoverable error',
+                imported: 'Imported',
+                channels2: 'channels',
+                deleted: 'Deleted',
+                hidden: 'Hidden',
+                shown: 'Shown',
+                edit: 'Edit',
+                delete: 'Delete',
+                hide: 'Hide',
+                show: 'Show',
+                save: 'Save',
+                cancel: 'Cancel',
+                confirmDelete: 'Are you sure you want to delete?',
+                confirmClearAll: 'Are you sure you want to delete all channels?',
+                confirmReset: 'Are you sure you want to reset all data? All channels and settings will be lost.',
+                passwordChanged: 'Password changed successfully',
+                importSuccess: 'Channels imported successfully',
+                importFailed: 'Import failed',
+                noImportLog: 'No import history',
+                quality: 'Quality',
+                auto: 'Auto',
+                volume: 'Volume',
+                muted: 'Muted',
+                unmuted: 'Unmuted',
+                fullscreen: 'Fullscreen',
+                exitFullscreen: 'Exit Fullscreen',
+                playing: 'Playing',
+                paused: 'Paused',
+                attempt: 'Attempt',
+                of: 'of',
+                addedFromUrl: 'Added from URL',
+                addedFromFile: 'Added from file'
             },
-            {
-                id: "ch_alwan7",
-                name: "Alwan Sport 7 4K",
-                url: "http://fueg-01.xyz:80/live/2370353253/esldgs57qoigmzxzmn2s/1641611.m3u8",
-                category: "ALWAN SPORT",
-                logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuhH7QXR24YA4PeJNfQRsxALFC3Sbaw_fhpg&s"
+            fr: {
+                admin: 'Panneau Admin',
+                liveBadge: 'Direct • Connecté',
+                heroTitle1: 'Regardez le Monde',
+                heroTitle2: 'sur MOH TV Pro',
+                heroDesc: 'Lecteur professionnel supportant tous les formats M3U et M3U8 avec reconnexion automatique et récupération intelligente',
+                channels: 'Chaînes',
+                autoReconnect: 'Reconnexion Auto',
+                mediaRecovery: 'Récupération Média',
+                categories: 'Catégories',
+                mostWatched: 'Les Plus Regardées',
+                allChannels: 'Toutes les Chaînes',
+                noChannels: 'Aucune chaîne disponible',
+                noChannelsDesc: 'Téléchargez votre playlist depuis le panneau admin',
+                uploadPlaylist: 'Télécharger Playlist',
+                connecting: 'Connexion au serveur...',
+                reconnecting: 'Reconnexion',
+                retry: 'Réessayer',
+                liveStream: 'Direct',
+                reload: 'Recharger',
+                adminLogin: 'Connexion Admin',
+                adminLoginDesc: 'Zone protégée - Admins uniquement',
+                password: 'Mot de passe',
+                loginError: 'Mot de passe incorrect',
+                login: 'Connexion',
+                defaultPassHint: 'Mot de passe par défaut: admin123',
+                dashboard: 'Tableau de bord',
+                manageChannels: 'Gérer les Chaînes',
+                uploadPlaylist2: 'Télécharger Playlist',
+                importLog: 'Journal d\'Import',
+                settings: 'Paramètres',
+                logout: 'Déconnexion',
+                totalChannels: 'Total Chaînes',
+                totalCategories: 'Catégories',
+                totalViews: 'Total Vues',
+                totalImports: 'Total Imports',
+                topWatched: 'Top Regardées',
+                recentImports: 'Imports Récents',
+                channel: 'Chaîne',
+                category: 'Catégorie',
+                views: 'Vues',
+                actions: 'Actions',
+                export: 'Exporter',
+                clearAll: 'Tout Supprimer',
+                dropFile: 'Glissez-déposez un fichier M3U / M3U8',
+                orClick: 'ou cliquez pour sélectionner',
+                supportedFormats: 'Formats supportés: .m3u, .m3u8, .txt',
+                importFromUrl: 'Importer depuis URL',
+                import: 'Importer',
+                urlHint: 'Collez une URL de playlist M3U directe',
+                autoProcessing: 'Traitement Auto',
+                removeAds: 'Supprimer les Publicités',
+                removeAdsDesc: 'Supprimer automatiquement les chaînes publicitaires',
+                removeDuplicates: 'Supprimer les Doublons',
+                removeDuplicatesDesc: 'Supprimer les doublons par nom et URL',
+                extractInfo: 'Extraire les Infos',
+                extractInfoDesc: 'Nom, logo, catégorie, URL',
+                replaceExisting: 'Remplacer la Liste',
+                replaceExistingDesc: 'Supprimer les anciennes chaînes avant l\'import',
+                uploadNote: 'Les chaînes seront extraites automatiquement et le site mis à jour instantanément',
+                securitySettings: 'Paramètres de Sécurité',
+                changePassword: 'Changer le Mot de Passe',
+                savePassword: 'Sauvegarder',
+                playerSettings: 'Paramètres du Lecteur',
+                autoReconnectSetting: 'Reconnexion Automatique',
+                autoReconnectDesc: 'Reconnexion en cas de coupure réseau',
+                mediaRecoverySetting: 'Récupération Média',
+                mediaRecoveryDesc: 'Récupérer le flux après les erreurs média',
+                reloadOnEnd: 'Recharger en Fin de Liste',
+                reloadOnEndDesc: 'Recharger la chaîne quand la playlist se termine',
+                dataManagement: 'Gestion des Données',
+                exportChannels: 'Exporter les Chaînes',
+                clearStats: 'Effacer les Stats',
+                resetAll: 'Tout Réinitialiser',
+                all: 'Tous',
+                searchPlaceholder: 'Rechercher une chaîne...',
+                noResults: 'Aucun résultat',
+                watching: 'En cours',
+                connected: 'Connecté',
+                error: 'Erreur',
+                mediaError: 'Erreur média - récupération',
+                networkError: 'Erreur réseau - reconnexion',
+                fatalError: 'Erreur irrécupérable',
+                imported: 'Importé',
+                channels2: 'chaînes',
+                deleted: 'Supprimé',
+                hidden: 'Masqué',
+                shown: 'Affiché',
+                edit: 'Modifier',
+                delete: 'Supprimer',
+                hide: 'Masquer',
+                show: 'Afficher',
+                save: 'Sauvegarder',
+                cancel: 'Annuler',
+                confirmDelete: 'Êtes-vous sûr de vouloir supprimer?',
+                confirmClearAll: 'Êtes-vous sûr de vouloir supprimer toutes les chaînes?',
+                confirmReset: 'Êtes-vous sûr de vouloir tout réinitialiser? Toutes les chaînes et paramètres seront perdus.',
+                passwordChanged: 'Mot de passe modifié avec succès',
+                importSuccess: 'Chaînes importées avec succès',
+                importFailed: 'Échec de l\'import',
+                noImportLog: 'Aucun historique d\'import',
+                quality: 'Qualité',
+                auto: 'Auto',
+                volume: 'Volume',
+                muted: 'Muet',
+                unmuted: 'Non muet',
+                fullscreen: 'Plein écran',
+                exitFullscreen: 'Quitter plein écran',
+                playing: 'En lecture',
+                paused: 'En pause',
+                attempt: 'Tentative',
+                of: 'sur',
+                addedFromUrl: 'Ajouté depuis URL',
+                addedFromFile: 'Ajouté depuis fichier'
             }
+        };
+
+        // ==================== STATE ====================
+        let currentLang = localStorage.getItem('mohtv_lang') || 'ar';
+        let channels = JSON.parse(localStorage.getItem('mohtv_channels') || '[]');
+        let watchStats = JSON.parse(localStorage.getItem('mohtv_watch_stats') || '{}');
+        let importLog = JSON.parse(localStorage.getItem('mohtv_import_log') || '[]');
+        let adminPassword = localStorage.getItem('mohtv_admin_pass') || 'admin123';
+        let isAdminLoggedIn = sessionStorage.getItem('mohtv_admin_session') === 'true';
+        let currentCategory = 'all';
+        let currentSearch = '';
+        let viewMode = 'grid';
+        let hls = null;
+        let currentChannel = null;
+        let reconnectAttempts = 0;
+        const maxReconnectAttempts = 10;
+        let reconnectTimer = null;
+        let playerSettings = JSON.parse(localStorage.getItem('mohtv_player_settings') || '{"autoReconnect":true,"mediaRecovery":true,"reloadOnEnd":true}');
+
+        // Default demo channels
+        const defaultChannels = [
+            { id: 'demo1', name: 'Red Bull TV', logo: '', group: 'Sports', url: 'https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8', hidden: false, order: 0 },
+            { id: 'demo2', name: 'NASA TV', logo: '', group: 'Science', url: 'https://ntv1.akamaized.net/hls/live/2014075/NASA-NTV1-HLS/master.m3u8', hidden: false, order: 1 },
+            { id: 'demo3', name: 'Big Buck Bunny', logo: '', group: 'Movies', url: 'https://test-streams.mux.dev/x36xhzz/x36xhzz.m3u8', hidden: false, order: 2 },
+            { id: 'demo4', name: 'Apple Test Stream', logo: '', group: 'Test', url: 'https://devstreaming-cdn.apple.com/videos/streaming/examples/img_bipbop_adv_example_ts/master.m3u8', hidden: false, order: 3 },
+            { id: 'demo5', name: 'Tears of Steel', logo: '', group: 'Movies', url: 'https://test-streams.mux.dev/test_001/stream.m3u8', hidden: false, order: 4 },
+            { id: 'demo6', name: 'Sintel Stream', logo: '', group: 'Movies', url: 'https://bitdash-a.akamaihd.net/content/sintel/hls/playlist.m3u8', hidden: false, order: 5 }
         ];
 
-        let channels = [...defaultChannels];
+        // Initialize with default channels if none exist
+        if (channels.length === 0) {
+            channels = defaultChannels;
+            saveChannels();
+        }
 
-        // دالة تحليل ملفات M3U و M3U8 لقراءة القنوات بداخلها
-        function parseM3U(m3uContent) {
-            const lines = m3uContent.split('\n');
-            const parsed = [];
-            let currentChannel = null;
+        // ==================== UTILITY FUNCTIONS ====================
+        function t(key) {
+            return translations[currentLang]?.[key] || translations.ar[key] || key;
+        }
+
+        function showToast(message, type = 'info') {
+            const colors = {
+                info: 'border-purple-500/30 bg-purple-500/10',
+                success: 'border-green-500/30 bg-green-500/10',
+                error: 'border-red-500/30 bg-red-500/10',
+                warning: 'border-yellow-500/30 bg-yellow-500/10'
+            };
+            const icons = {
+                info: 'lucide-info',
+                success: 'lucide-check-circle',
+                error: 'lucide-x-circle',
+                warning: 'lucide-alert-triangle'
+            };
+            const iconColors = {
+                info: 'text-purple-400',
+                success: 'text-green-400',
+                error: 'text-red-400',
+                warning: 'text-yellow-400'
+            };
+            const toast = document.createElement('div');
+            toast.className = `toast glass-strong border ${colors[type]} rounded-xl p-4 min-w-[280px] max-w-md flex items-center gap-3 shadow-2xl`;
+            toast.innerHTML = `
+                <i class="lucide ${icons[type]} ${iconColors[type]}" style="font-size:20px"></i>
+                <p class="text-sm font-medium flex-1">${message}</p>
+                <button onclick="this.parentElement.remove()" class="text-slate-400 hover:text-white transition">
+                    <i class="lucide lucide-x" style="font-size:16px"></i>
+                </button>
+            `;
+            document.getElementById('toastContainer').appendChild(toast);
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                toast.style.transform = 'translateX(100%)';
+                setTimeout(() => toast.remove(), 300);
+            }, 4000);
+        }
+
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+
+        function togglePasswordVisibility(inputId, btn) {
+            const input = document.getElementById(inputId);
+            if (input.type === 'password') {
+                input.type = 'text';
+                btn.innerHTML = '<i class="lucide lucide-eye-off" style="font-size:18px"></i>';
+            } else {
+                input.type = 'password';
+                btn.innerHTML = '<i class="lucide lucide-eye" style="font-size:18px"></i>';
+            }
+        }
+
+        // ==================== LANGUAGE ====================
+        function changeLanguage(lang) {
+            currentLang = lang;
+            localStorage.setItem('mohtv_lang', lang);
+            
+            if (lang === 'ar') {
+                document.documentElement.lang = 'ar';
+                document.documentElement.dir = 'rtl';
+                document.body.dir = 'rtl';
+                document.getElementById('currentLang').textContent = 'العربية';
+            } else if (lang === 'en') {
+                document.documentElement.lang = 'en';
+                document.documentElement.dir = 'ltr';
+                document.body.dir = 'ltr';
+                document.getElementById('currentLang').textContent = 'English';
+            } else if (lang === 'fr') {
+                document.documentElement.lang = 'fr';
+                document.documentElement.dir = 'ltr';
+                document.body.dir = 'ltr';
+                document.getElementById('currentLang').textContent = 'Français';
+            }
+
+            document.querySelectorAll('[data-i18n]').forEach(el => {
+                const key = el.getAttribute('data-i18n');
+                el.textContent = t(key);
+            });
+
+            document.getElementById('searchInput').placeholder = t('searchPlaceholder');
+            const mobileSearch = document.getElementById('searchInputMobile');
+            if (mobileSearch) mobileSearch.placeholder = t('searchPlaceholder');
+
+            document.getElementById('langDropdown').classList.add('hidden');
+            renderChannels();
+            renderCategories();
+        }
+
+        document.getElementById('langBtn').addEventListener('click', (e) => {
+            e.stopPropagation();
+            document.getElementById('langDropdown').classList.toggle('hidden');
+        });
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#langBtn') && !e.target.closest('#langDropdown')) {
+                document.getElementById('langDropdown').classList.add('hidden');
+            }
+        });
+
+        // ==================== DATA MANAGEMENT ====================
+        function saveChannels() {
+            localStorage.setItem('mohtv_channels', JSON.stringify(channels));
+        }
+
+        function saveWatchStats() {
+            localStorage.setItem('mohtv_watch_stats', JSON.stringify(watchStats));
+        }
+
+        function saveImportLog() {
+            localStorage.setItem('mohtv_import_log', JSON.stringify(importLog));
+        }
+
+        function addImportLog(count, source, details = '') {
+            importLog.unshift({
+                id: Date.now(),
+                timestamp: new Date().toISOString(),
+                count: count,
+                source: source,
+                details: details
+            });
+            if (importLog.length > 50) importLog = importLog.slice(0, 50);
+            saveImportLog();
+        }
+
+        // ==================== M3U PARSER ====================
+        function parseM3U(content) {
+            const lines = content.split(/\r?\n/);
+            const channels = [];
+            let current = null;
+            let order = 0;
+
+            // Ad keywords to filter out
+            const adKeywords = ['advert', 'promo', 'advertisement', 'ad-', 'adblock', 'bein sports ad', 'interval'];
 
             for (let i = 0; i < lines.length; i++) {
                 const line = lines[i].trim();
                 
-                if (line.startsWith('#EXTINF:')) {
-                    currentChannel = {};
+                if (line.startsWith('#EXTINF')) {
+                    current = { id: 'ch_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9) };
                     
-                    // استخراج الشعار
-                    const logoMatch = line.match(/tvg-logo="([^"]+)"/);
-                    currentChannel.logo = logoMatch ? logoMatch[1] : 'https://via.placeholder.com/150/161624/ffffff?text=MOH+TV';
+                    // Extract name (after the last comma)
+                    const commaIndex = line.lastIndexOf(',');
+                    if (commaIndex !== -1) {
+                        current.name = line.substring(commaIndex + 1).trim();
+                    }
 
-                    // استخراج الاسم
-                    const nameMatch = line.split(',');
-                    currentChannel.name = nameMatch[1] ? nameMatch[1].trim() : 'قناة غير مسماة';
+                    // Extract tvg-logo
+                    const logoMatch = line.match(/tvg-logo="([^"]*)"/i);
+                    if (logoMatch) current.logo = logoMatch[1];
+
+                    // Extract tvg-group
+                    const groupMatch = line.match(/tvg-group="([^"]*)"/i);
+                    if (groupMatch) current.group = groupMatch[1].trim() || 'Uncategorized';
+
+                    // Extract tvg-id
+                    const idMatch = line.match(/tvg-id="([^"]*)"/i);
+                    if (idMatch) current.tvgId = idMatch[1];
+
+                    // Extract title (alternative)
+                    const titleMatch = line.match(/title="([^"]*)"/i);
+                    if (titleMatch && !current.name) current.name = titleMatch[1];
+                } else if (line && !line.startsWith('#') && current) {
+                    current.url = line;
+                    current.group = current.group || 'Uncategorized';
+                    current.name = current.name || 'Unknown Channel';
+                    current.logo = current.logo || '';
+                    current.hidden = false;
+                    current.order = order++;
                     
-                    // استخراج الفئة
-                    const groupMatch = line.match(/group-title="([^"]+)"/);
-                    currentChannel.category = groupMatch ? groupMatch[1] : 'عامة';
-                } else if (line.startsWith('http') && currentChannel) {
-                    currentChannel.url = line;
-                    parsed.push(currentChannel);
-                    currentChannel = null; 
+                    // Check if it's an ad channel
+                    const isAd = adKeywords.some(kw => 
+                        current.name.toLowerCase().includes(kw) || 
+                        (current.group && current.group.toLowerCase().includes(kw))
+                    );
+                    
+                    if (!isAd) {
+                        channels.push(current);
+                    }
+                    current = null;
                 }
             }
-            return parsed;
+
+            return channels;
         }
 
-        // قراءة وتحميل الملف عند رفعه من الخانة العلوية
-        document.getElementById('playlistFile').addEventListener('change', function(event) {
-            const file = event.target.files[0];
-            if (!file) return;
-
-            const reader = new FileReader();
-            reader.onload = function(e) {
-                const content = e.target.result;
-                const loadedChannels = parseM3U(content);
-                
-                if (loadedChannels.length > 0) {
-                    // دمج قنواتك الأساسية مع القنوات الجديدة التي تم رفعها لتصبح القائمة كاملة
-                    channels = [...defaultChannels, ...loadedChannels];
-                    renderChannels();
-                    
-                    // تشغيل أول قناة من القنوات المضافة تلقائياً
-                    playChannel(channels[0].url);
-                    alert('تم سحب البلاي ليست بنجاح وإضافة ' + loadedChannels.length + ' قناة جديدة!');
-                } else {
-                    alert('لم يتم العثور على قنوات صالحة في هذا الملف.');
+        function removeDuplicates(channelList) {
+            const seen = new Set();
+            const seenNames = new Set();
+            return channelList.filter(ch => {
+                const urlKey = ch.url.split('?')[0]; // Remove query params for comparison
+                const nameKey = ch.name.toLowerCase().trim();
+                if (seen.has(urlKey) || seenNames.has(nameKey)) {
+                    return false;
                 }
-            };
-            reader.readAsText(file);
-        });
-
-        // دالة بناء وعرض القنوات في الصفحة
-        function renderChannels() {
-            const container = document.getElementById('channelsList');
-            container.innerHTML = '';
-
-            if (channels.length === 0) {
-                container.innerHTML = `<p class="text-[var(--text-secondary)] text-sm col-span-full text-center py-8">لا توجد قنوات متاحة.</p>`;
-                return;
-            }
-
-            channels.forEach(channel => {
-                const card = document.createElement('div');
-                card.className = "bg-[var(--bg-primary)] p-3 rounded-lg cursor-pointer border border-white/10 hover:border-[var(--accent-purple)] transition flex flex-col items-center text-center";
-                
-                card.onclick = () => playChannel(channel.url);
-                
-                card.innerHTML = `
-                    <img src="${channel.logo}" alt="${channel.name}" class="w-16 h-16 object-cover rounded-lg mb-2" onerror="this.src='https://via.placeholder.com/150'">
-                    <h3 class="font-medium text-sm text-white line-clamp-1">${channel.name}</h3>
-                    <span class="text-xs text-[var(--text-secondary)] mt-1 line-clamp-1">${channel.category}</span>
-                `;
-                container.appendChild(card);
+                seen.add(urlKey);
+                seenNames.add(nameKey);
+                return true;
             });
         }
 
-        // دالة تشغيل الفيديو
-        function playChannel(url) {
-            const video = document.getElementById('videoPlayer');
-            
-            if (Hls.isSupported()) {
-                const hls = new Hls();
-                hls.loadSource(url);
-                hls.attachMedia(video);
-                video.play().catch(e => console.log("انقر فوق القناة للتشغيل", e));
-            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
-                video.src = url;
-                video.play().catch(e => console.log("an انقر فوق القناة للتشغيل", e));
+        async function processM3UContent(content, source) {
+            try {
+                let parsed = parseM3U(content);
+                
+                // Remove duplicates
+                parsed = removeDuplicates(parsed);
+                
+                const replaceToggle = document.getElementById('replaceToggle');
+                if (replaceToggle && replaceToggle.classList.contains('active')) {
+                    channels = parsed;
+                } else {
+                    // Merge with existing, avoiding duplicates
+                    const existingUrls = new Set(channels.map(c => c.url));
+                    const existingNames = new Set(channels.map(c => c.name.toLowerCase()));
+                    parsed.forEach(ch => {
+                        if (!existingUrls.has(ch.url) && !existingNames.has(ch.name.toLowerCase())) {
+                            channels.push(ch);
+                        }
+                    });
+                }
+
+                // Reorder
+                channels.forEach((ch, i) => { if (ch.order === undefined) ch.order = i; });
+
+                saveChannels();
+                addImportLog(parsed.length, source, `${t('imported')} ${parsed.length} ${t('channels2')}`);
+                
+                renderChannels();
+                renderCategories();
+                renderAdminDashboard();
+                
+                showToast(`${t('importSuccess')} (${parsed.length} ${t('channels2')})`, 'success');
+                return true;
+            } catch (err) {
+                console.error('Parse error:', err);
+                showToast(t('importFailed') + ': ' + err.message, 'error');
+                return false;
             }
         }
 
-        // تهيئة التطبيق عند الدخول
-        window.addEventListener('DOMContentLoaded', () => {
+        // ==================== FILE UPLOAD ====================
+        function handleFileUpload(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            
+            const reader = new FileReader();
+            reader.onload = async (e) => {
+                const content = e.target.result;
+                await processM3UContent(content, t('addedFromFile') + ': ' + file.name);
+            };
+            reader.onerror = () => showToast(t('importFailed'), 'error');
+            reader.readAsText(file);
+        }
+
+        async function importFromUrl() {
+            const url = document.getElementById('m3uUrlInput').value.trim();
+            if (!url) {
+                showToast(t('importFromUrl'), 'warning');
+                return;
+            }
+
+            showToast(t('connecting'), 'info');
+            
+            try {
+                // Try direct fetch first
+                let response;
+                try {
+                    response = await fetch(url);
+                } catch (e) {
+                    // If CORS fails, try with a proxy
+                    response = await fetch('https://corsproxy.io/?' + encodeURIComponent(url));
+                }
+                
+                if (!response.ok) throw new Error('HTTP ' + response.status);
+                const content = await response.text();
+                await processM3UContent(content, t('addedFromUrl') + ': ' + url.substring(0, 50));
+                document.getElementById('m3uUrlInput').value = '';
+            } catch (err) {
+                // If fetch fails, try parsing as direct URL list
+                showToast(t('importFailed') + ': ' + err.message, 'error');
+            }
+        }
+
+        // Drag and drop
+        const dragZone = document.getElementById('dragZone');
+        if (dragZone) {
+            ['dragenter', 'dragover'].forEach(evt => {
+                dragZone.addEventListener(evt, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dragZone.classList.add('drag-over');
+                });
+            });
+
+            ['dragleave', 'drop'].forEach(evt => {
+                dragZone.addEventListener(evt, (e) => {
+                    e.preventDefault();
+                    e.stopPropagation();
+                    dragZone.classList.remove('drag-over');
+                });
+            });
+
+            dragZone.addEventListener('drop', async (e) => {
+                const file = e.dataTransfer.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = async (ev) => {
+                        await processM3UContent(ev.target.result, t('addedFromFile') + ': ' + file.name);
+                    };
+                    reader.readAsText(file);
+                }
+            });
+        }
+
+        // ==================== RENDER CHANNELS ====================
+        function getFilteredChannels() {
+            let filtered = channels.filter(ch => !ch.hidden);
+            
+            if (currentCategory !== 'all') {
+                filtered = filtered.filter(ch => ch.group === currentCategory);
+            }
+
+            if (currentSearch) {
+                const search = currentSearch.toLowerCase();
+                filtered = filtered.filter(ch => 
+                    ch.name.toLowerCase().includes(search) ||
+                    (ch.group && ch.group.toLowerCase().includes(search))
+                );
+            }
+
+            return filtered.sort((a, b) => (a.order || 0) - (b.order || 0));
+        }
+
+        function getMostWatched() {
+            return channels
+                .filter(ch => !ch.hidden)
+                .map(ch => ({ ...ch, views: watchStats[ch.id] || 0 }))
+                .filter(ch => ch.views > 0)
+                .sort((a, b) => b.views - a.views)
+                .slice(0, 6);
+        }
+
+        function renderCategories() {
+            const container = document.getElementById('categoriesContainer');
+            const categories = [...new Set(channels.filter(ch => !ch.hidden).map(ch => ch.group || 'Uncategorized'))].sort();
+            
+            let html = `<button onclick="selectCategory('all')" class="category-pill ${currentCategory === 'all' ? 'active' : ''} glass px-4 py-2 rounded-xl text-sm font-semibold border border-white/5">
+                ${t('all')} <span class="opacity-60">(${channels.filter(ch => !ch.hidden).length})</span>
+            </button>`;
+
+            categories.forEach(cat => {
+                const count = channels.filter(ch => !ch.hidden && ch.group === cat).length;
+                html += `<button onclick="selectCategory('${cat.replace(/'/g, "\\'")}')" class="category-pill ${currentCategory === cat ? 'active' : ''} glass px-4 py-2 rounded-xl text-sm font-semibold border border-white/5">
+                    ${cat} <span class="opacity-60">(${count})</span>
+                </button>`;
+            });
+
+            container.innerHTML = html;
+        }
+
+        function renderChannelCard(ch, isMostWatched = false) {
+            const views = watchStats[ch.id] || 0;
+            const logoHtml = ch.logo 
+                ? `<img src="${ch.logo}" alt="${ch.name}" class="w-full h-full object-contain" onerror="this.parentElement.innerHTML='<span class=\\'text-purple-400 font-black text-xl\\'>${ch.name.charAt(0).toUpperCase()}</span>'">`
+                : `<span class="text-purple-400 font-black text-xl">${ch.name.charAt(0).toUpperCase()}</span>`;
+            
+            return `
+                <div class="channel-card glass rounded-2xl p-4 border border-white/5" onclick="playChannel('${ch.id}')">
+                    <div class="flex items-center gap-3">
+                        <div class="relative w-14 h-14 rounded-xl channel-logo-placeholder overflow-hidden flex-shrink-0">
+                            ${logoHtml}
+                            <div class="play-icon absolute inset-0 bg-black/60 flex items-center justify-center rounded-xl">
+                                <i class="lucide lucide-play text-white" style="font-size:20px"></i>
+                            </div>
+                        </div>
+                        <div class="min-w-0 flex-1">
+                            <h4 class="font-bold text-sm truncate">${ch.name}</h4>
+                            <p class="text-xs text-slate-500 truncate">${ch.group || ''}</p>
+                            ${views > 0 ? `<p class="text-[10px] text-orange-400 mt-0.5 flex items-center gap-1"><i class="lucide lucide-eye" style="font-size:10px"></i> ${views}</p>` : ''}
+                        </div>
+                    </div>
+                </div>
+            `;
+        }
+
+        function renderChannels() {
+            const container = document.getElementById('channelsContainer');
+            const noChannels = document.getElementById('noChannels');
+            const filtered = getFilteredChannels();
+            
+            document.getElementById('filteredCount').textContent = `${filtered.length} ${t('channels')}`;
+            document.getElementById('channelCountStat').textContent = channels.filter(ch => !ch.hidden).length;
+
+            if (filtered.length === 0) {
+                if (channels.filter(ch => !ch.hidden).length === 0) {
+                    container.innerHTML = '';
+                    noChannels.classList.remove('hidden');
+                } else {
+                    container.innerHTML = `
+                        <div class="col-span-full text-center py-12">
+                            <i class="lucide lucide-search-x text-slate-500 mx-auto mb-3" style="font-size:32px"></i>
+                            <p class="text-slate-400">${t('noResults')}</p>
+                        </div>
+                    `;
+                    noChannels.classList.add('hidden');
+                }
+                return;
+            }
+
+            noChannels.classList.add('hidden');
+
+            if (viewMode === 'grid') {
+                container.className = 'grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4';
+                container.innerHTML = filtered.map(ch => renderChannelCard(ch)).join('');
+            } else {
+                container.className = 'space-y-2';
+                container.innerHTML = filtered.map(ch => `
+                    <div class="channel-card glass rounded-xl p-3 border border-white/5 flex items-center gap-3" onclick="playChannel('${ch.id}')">
+                        <div class="w-10 h-10 rounded-lg channel-logo-placeholder overflow-hidden flex-shrink-0">
+                            ${ch.logo ? `<img src="${ch.logo}" alt="${ch.name}" class="w-full h-full object-contain" onerror="this.parentElement.innerHTML='<span class=\\'text-purple-400 font-bold\\'>${ch.name.charAt(0).toUpperCase()}</span>'">` : `<span class="text-purple-400 font-bold flex items-center justify-center w-full h-full">${ch.name.charAt(0).toUpperCase()}</span>`}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <h4 class="font-bold text-sm truncate">${ch.name}</h4>
+                            <p class="text-xs text-slate-500 truncate">${ch.group || ''}</p>
+                        </div>
+                        ${(watchStats[ch.id] || 0) > 0 ? `<span class="text-xs text-orange-400 flex items-center gap-1"><i class="lucide lucide-eye" style="font-size:12px"></i> ${watchStats[ch.id]}</span>` : ''}
+                        <i class="lucide lucide-play-circle text-purple-400" style="font-size:24px"></i>
+                    </div>
+                `).join('');
+            }
+
+            // Render most watched
+            const mostWatched = getMostWatched();
+            const mwSection = document.getElementById('mostWatchedSection');
+            const mwContainer = document.getElementById('mostWatchedContainer');
+            
+            if (mostWatched.length > 0) {
+                mwSection.classList.remove('hidden');
+                mwContainer.innerHTML = mostWatched.map(ch => renderChannelCard(ch, true)).join('');
+            } else {
+                mwSection.classList.add('hidden');
+            }
+        }
+
+        function selectCategory(cat) {
+            currentCategory = cat;
+            renderCategories();
             renderChannels();
-            if (channels.length > 0) {
-                playChannel(channels[0].url);
+        }
+
+        function setViewMode(mode) {
+            viewMode = mode;
+            document.getElementById('gridViewBtn').classList.toggle('bg-white/10', mode === 'grid');
+            document.getElementById('listViewBtn').classList.toggle('bg-white/10', mode === 'list');
+            renderChannels();
+        }
+
+        // Search
+        function handleSearch(value) {
+            currentSearch = value;
+            const clearBtn = document.getElementById('clearSearch');
+            if (value) {
+                clearBtn.classList.remove('hidden');
+            } else {
+                clearBtn.classList.add('hidden');
+            }
+            renderChannels();
+        }
+
+        document.getElementById('searchInput').addEventListener('input', (e) => {
+            handleSearch(e.target.value);
+            document.getElementById('searchInputMobile').value = e.target.value;
+        });
+
+        document.getElementById('searchInputMobile').addEventListener('input', (e) => {
+            handleSearch(e.target.value);
+            document.getElementById('searchInput').value = e.target.value;
+        });
+
+        document.getElementById('clearSearch').addEventListener('click', () => {
+            document.getElementById('searchInput').value = '';
+            document.getElementById('searchInputMobile').value = '';
+            handleSearch('');
+        });
+
+        // ==================== VIDEO PLAYER ====================
+        function playChannel(channelId) {
+            const channel = channels.find(ch => ch.id === channelId);
+            if (!channel) return;
+
+            currentChannel = channel;
+            reconnectAttempts = 0;
+
+            // Update UI
+            document.getElementById('playerChannelName').textContent = channel.name;
+            const logoEl = document.getElementById('playerChannelLogo');
+            if (channel.logo) {
+                logoEl.innerHTML = `<img src="${channel.logo}" alt="${channel.name}" class="w-full h-full object-contain" onerror="this.parentElement.innerHTML='<span class=\\'text-purple-400 font-bold text-sm\\'>TV</span>'">`;
+            } else {
+                logoEl.innerHTML = `<span class="text-purple-400 font-bold text-sm">TV</span>`;
+            }
+
+            const catEl = document.getElementById('playerCategory');
+            if (channel.group) {
+                catEl.classList.remove('hidden');
+                catEl.querySelector('span').textContent = channel.group;
+            } else {
+                catEl.classList.add('hidden');
+            }
+
+            // Update watch stats
+            watchStats[channelId] = (watchStats[channelId] || 0) + 1;
+            saveWatchStats();
+
+            // Show player
+            document.getElementById('playerModal').classList.remove('hidden-player');
+            document.body.style.overflow = 'hidden';
+
+            // Start playback
+            startPlayback(channel.url);
+            renderChannels();
+        }
+
+        function startPlayback(url) {
+            const video = document.getElementById('videoPlayer');
+            
+            // Clean up previous instance
+            if (hls) {
+                hls.destroy();
+                hls = null;
+            }
+
+            // Reset states
+            showPlayerLoading();
+            updatePlayerStatus('connecting', t('connecting'));
+
+            const isM3U8 = url.includes('.m3u8') || url.includes('m3u8');
+
+            if (Hls.isSupported() && isM3U8) {
+                hls = new Hls({
+                    enableWorker: true,
+                    lowLatencyMode: true,
+                    backBufferLength: 90,
+                    maxBufferLength: 30,
+                    maxMaxBufferLength: 600,
+                    maxBufferSize: 60 * 1000 * 1000,
+                    maxBufferHole: 0.5,
+                    fragLoadingTimeOut: 20000,
+                    fragLoadingMaxRetry: 6,
+                    fragLoadingRetryDelay: 1000,
+                    fragLoadingMaxRetryTimeout: 64000,
+                    levelLoadingTimeOut: 10000,
+                    levelLoadingMaxRetry: 4,
+                    levelLoadingRetryDelay: 1000,
+                    levelLoadingMaxRetryTimeout: 64000,
+                    manifestLoadingTimeOut: 10000,
+                    manifestLoadingMaxRetry: 4,
+                    manifestLoadingRetryDelay: 1000,
+                    manifestLoadingMaxRetryTimeout: 64000,
+                    // Recovery settings
+                    recoverMediaErrorDuration: 3000,
+                });
+
+                hls.loadSource(url);
+                hls.attachMedia(video);
+
+                hls.on(Hls.Events.MANIFEST_PARSED, (event, data) => {
+                    hidePlayerLoading();
+                    updatePlayerStatus('connected', t('connected'));
+                    video.play().catch(e => console.log('Auto-play prevented:', e));
+                    
+                    // Populate quality levels
+                    populateQualityLevels(data.levels);
+                });
+
+                hls.on(Hls.Events.LEVEL_SWITCHED, (event, data) => {
+                    const level = hls.levels[data.level];
+                    if (level) {
+                        const quality = level.height ? level.height + 'p' : (level.bitrate ? Math.round(level.bitrate / 1000) + 'kbps' : 'Auto');
+                        document.getElementById('currentQuality').textContent = quality;
+                    }
+                });
+
+                hls.on(Hls.Events.ERROR, (event, data) => {
+                    console.error('HLS Error:', data);
+                    
+                    if (!data.fatal) return;
+
+                    switch (data.type) {
+                        case Hls.ErrorTypes.NETWORK_ERROR:
+                            if (playerSettings.autoReconnect) {
+                                updatePlayerStatus('reconnecting', t('networkError'));
+                                showReconnectOverlay();
+                                hls.startLoad();
+                            } else {
+                                showPlayerError(t('networkError'), data.details);
+                            }
+                            break;
+                        case Hls.ErrorTypes.MEDIA_ERROR:
+                            if (playerSettings.mediaRecovery) {
+                                updatePlayerStatus('error', t('mediaError'));
+                                showToast(t('mediaError'), 'warning');
+                                hls.recoverMediaError();
+                            } else {
+                                showPlayerError(t('mediaError'), data.details);
+                            }
+                            break;
+                        case Hls.ErrorTypes.MUX_ERROR:
+                            if (playerSettings.mediaRecovery) {
+                                hls.recoverMediaError();
+                            }
+                            break;
+                        default:
+                            showPlayerError(t('fatalError'), data.details);
+                            hls.destroy();
+                            break;
+                    }
+                });
+
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                // Native HLS (Safari)
+                video.src = url;
+                video.addEventListener('loadedmetadata', () => {
+                    hidePlayerLoading();
+                    updatePlayerStatus('connected', t('connected'));
+                    video.play().catch(e => console.log('Auto-play prevented:', e));
+                });
+
+                video.addEventListener('error', () => {
+                    if (playerSettings.autoReconnect) {
+                        updatePlayerStatus('reconnecting', t('networkError'));
+                        showReconnectOverlay();
+                        setTimeout(() => {
+                            video.load();
+                            video.play();
+                        }, 3000);
+                    } else {
+                        showPlayerError(t('networkError'), '');
+                    }
+                });
+
+                // Check for end of stream
+                video.addEventListener('ended', () => {
+                    if (playerSettings.reloadOnEnd) {
+                        showToast(t('reconnecting'), 'info');
+                        video.load();
+                        video.play();
+                    }
+                });
+
+            } else {
+                // Fallback: try direct video
+                video.src = url;
+                video.addEventListener('loadedmetadata', () => {
+                    hidePlayerLoading();
+                    updatePlayerStatus('connected', t('connected'));
+                    video.play().catch(e => console.log('Auto-play prevented:', e));
+                });
+
+                video.addEventListener('error', () => {
+                    showPlayerError(t('fatalError'), 'Browser may not support this stream format');
+                });
+            }
+
+            // Listen for video ended (for non-native HLS)
+            video.addEventListener('ended', handleVideoEnded);
+            video.addEventListener('waiting', () => showPlayerLoading());
+            video.addEventListener('playing', () => {
+                hidePlayerLoading();
+                hideReconnectOverlay();
+                hidePlayerError();
+                updatePlayerStatus('connected', t('playing'));
+            });
+        }
+
+        let endedEventListenerAdded = false;
+        function handleVideoEnded() {
+            if (playerSettings.reloadOnEnd && currentChannel) {
+                showToast(t('reconnecting'), 'info');
+                setTimeout(() => startPlayback(currentChannel.url), 1000);
+            }
+        }
+
+        function populateQualityLevels(levels) {
+            const menu = document.getElementById('qualityMenu');
+            let html = `<button onclick="setQuality(-1)" class="w-full text-right px-3 py-2 rounded-lg hover:bg-white/5 transition text-sm font-semibold flex items-center justify-between">
+                <span>${t('auto')}</span>
+                <i class="lucide lucide-check text-purple-400 quality-check" style="font-size:14px" data-quality="-1"></i>
+            </button>`;
+            
+            levels.forEach((level, index) => {
+                const label = level.height ? level.height + 'p' : (level.bitrate ? Math.round(level.bitrate / 1000) + ' kbps' : 'Level ' + (index + 1));
+                html += `<button onclick="setQuality(${index})" class="w-full text-right px-3 py-2 rounded-lg hover:bg-white/5 transition text-sm font-semibold flex items-center justify-between">
+                    <span>${label}</span>
+                    <i class="lucide lucide-check text-purple-400 quality-check hidden" style="font-size:14px" data-quality="${index}"></i>
+                </button>`;
+            });
+
+            menu.innerHTML = html;
+        }
+
+        function setQuality(level) {
+            if (hls) {
+                hls.currentLevel = level;
+                document.querySelectorAll('.quality-check').forEach(check => {
+                    check.classList.toggle('hidden', check.dataset.quality !== level.toString());
+                });
+            }
+            document.getElementById('qualityMenu').classList.add('hidden');
+            const label = level === -1 ? t('auto') : (hls.levels[level]?.height ? hls.levels[level].height + 'p' : 'Level ' + (level + 1));
+            document.getElementById('currentQuality').textContent = label;
+        }
+
+        function toggleQualityMenu() {
+            document.getElementById('qualityMenu').classList.toggle('hidden');
+        }
+
+        document.addEventListener('click', (e) => {
+            if (!e.target.closest('#qualityBtn') && !e.target.closest('#qualityMenu')) {
+                document.getElementById('qualityMenu').classList.add('hidden');
+            }
+        });
+
+        function showPlayerLoading() {
+            document.getElementById('playerLoading').classList.remove('hidden');
+            document.getElementById('playerLoading').classList.add('flex');
+        }
+
+        function hidePlayerLoading() {
+            document.getElementById('playerLoading').classList.add('hidden');
+            document.getElementById('playerLoading').classList.remove('flex');
+        }
+
+        function showPlayerError(message, detail) {
+            hidePlayerLoading();
+            hideReconnectOverlay();
+            document.getElementById('playerError').classList.remove('hidden');
+            document.getElementById('playerError').classList.add('flex');
+            document.getElementById('playerErrorText').textContent = message;
+            document.getElementById('playerErrorDetail').textContent = detail || '';
+            updatePlayerStatus('error', t('error'));
+        }
+
+        function hidePlayerError() {
+            document.getElementById('playerError').classList.add('hidden');
+            document.getElementById('playerError').classList.remove('flex');
+        }
+
+        function showReconnectOverlay() {
+            hidePlayerLoading();
+            document.getElementById('playerReconnect').classList.remove('hidden');
+            document.getElementById('playerReconnect').classList.add('flex');
+            
+            reconnectAttempts++;
+            document.getElementById('reconnectCounter').textContent = `${t('attempt')} ${reconnectAttempts} ${t('of')} ${maxReconnectAttempts}`;
+            
+            const progress = (reconnectAttempts / maxReconnectAttempts) * 100;
+            document.getElementById('reconnectProgress').style.width = progress + '%';
+
+            if (reconnectAttempts >= maxReconnectAttempts) {
+                hideReconnectOverlay();
+                showPlayerError(t('fatalError'), t('networkError'));
+            }
+        }
+
+        function hideReconnectOverlay() {
+            document.getElementById('playerReconnect').classList.add('hidden');
+            document.getElementById('playerReconnect').classList.remove('flex');
+        }
+
+        function updatePlayerStatus(status, text) {
+            const dot = document.getElementById('playerStatusDot');
+            const statusText = document.getElementById('playerStatusText');
+            
+            statusText.textContent = text;
+            
+            switch(status) {
+                case 'connected':
+                    dot.className = 'w-2 h-2 rounded-full bg-green-400 pulse-dot';
+                    break;
+                case 'connecting':
+                    dot.className = 'w-2 h-2 rounded-full bg-yellow-400 pulse-dot';
+                    break;
+                case 'reconnecting':
+                    dot.className = 'w-2 h-2 rounded-full bg-yellow-400 pulse-dot';
+                    break;
+                case 'error':
+                    dot.className = 'w-2 h-2 rounded-full bg-red-400 pulse-dot';
+                    break;
+            }
+        }
+
+        function retryCurrentChannel() {
+            if (currentChannel) {
+                reconnectAttempts = 0;
+                hidePlayerError();
+                hideReconnectOverlay();
+                startPlayback(currentChannel.url);
+            }
+        }
+
+        function togglePlayPause() {
+            const video = document.getElementById('videoPlayer');
+            const btn = document.getElementById('playPauseBtn');
+            if (video.paused) {
+                video.play();
+                btn.innerHTML = '<i class="lucide lucide-pause" style="font-size:20px"></i>';
+            } else {
+                video.pause();
+                btn.innerHTML = '<i class="lucide lucide-play" style="font-size:20px"></i>';
+            }
+        }
+
+        function toggleMute() {
+            const video = document.getElementById('videoPlayer');
+            const btn = document.getElementById('muteBtn');
+            const slider = document.getElementById('volumeSlider');
+            video.muted = !video.muted;
+            if (video.muted) {
+                btn.innerHTML = '<i class="lucide lucide-volume-x" style="font-size:20px"></i>';
+                slider.value = 0;
+            } else {
+                btn.innerHTML = '<i class="lucide lucide-volume-2" style="font-size:20px"></i>';
+                slider.value = video.volume * 100;
+            }
+        }
+
+        document.getElementById('volumeSlider').addEventListener('input', (e) => {
+            const video = document.getElementById('videoPlayer');
+            const btn = document.getElementById('muteBtn');
+            video.volume = e.target.value / 100;
+            video.muted = e.target.value == 0;
+            if (video.muted || e.target.value == 0) {
+                btn.innerHTML = '<i class="lucide lucide-volume-x" style="font-size:20px"></i>';
+            } else if (e.target.value < 50) {
+                btn.innerHTML = '<i class="lucide lucide-volume-1" style="font-size:20px"></i>';
+            } else {
+                btn.innerHTML = '<i class="lucide lucide-volume-2" style="font-size:20px"></i>';
+            }
+        });
+
+        function toggleFullscreen() {
+            const video = document.getElementById('videoPlayer');
+            const wrapper = video.closest('.video-wrapper');
+            if (!document.fullscreenElement) {
+                if (wrapper.requestFullscreen) {
+                    wrapper.requestFullscreen();
+                } else if (wrapper.webkitRequestFullscreen) {
+                    wrapper.webkitRequestFullscreen();
+                } else if (wrapper.msRequestFullscreen) {
+                    wrapper.msRequestFullscreen();
+                }
+            } else {
+                if (document.exitFullscreen) {
+                    document.exitFullscreen();
+                } else if (document.webkitExitFullscreen) {
+                    document.webkitExitFullscreen();
+                }
+            }
+        }
+
+        function closePlayer() {
+            document.getElementById('playerModal').classList.add('hidden-player');
+            document.body.style.overflow = '';
+            
+            const video = document.getElementById('videoPlayer');
+            video.pause();
+            video.removeAttribute('src');
+            video.load();
+            
+            if (hls) {
+                hls.destroy();
+                hls = null;
+            }
+
+            if (reconnectTimer) {
+                clearTimeout(reconnectTimer);
+                reconnectTimer = null;
+            }
+
+            currentChannel = null;
+            reconnectAttempts = 0;
+            hidePlayerError();
+            hideReconnectOverlay();
+            hidePlayerLoading();
+        }
+
+        // Close player on Escape
+        document.addEventListener('keydown', (e) => {
+            if (e.key === 'Escape') {
+                if (!document.getElementById('playerModal').classList.contains('hidden-player')) {
+                    if (!document.fullscreenElement) {
+                        closePlayer();
+                    }
+                }
+                if (!document.getElementById('adminLoginModal').classList.contains('hidden')) {
+                    closeAdminLogin();
+                }
+            }
+        });
+
+        // ==================== ADMIN ====================
+        function openAdminLogin() {
+            if (isAdminLoggedIn) {
+                openAdminDashboard();
+            } else {
+                document.getElementById('adminLoginModal').classList.remove('hidden');
+                document.getElementById('adminLoginModal').classList.add('flex');
+            }
+        }
+
+        function closeAdminLogin() {
+            document.getElementById('adminLoginModal').classList.add('hidden');
+            document.getElementById('adminLoginModal').classList.remove('flex');
+            document.getElementById('adminPasswordInput').value = '';
+            document.getElementById('loginError').classList.add('hidden');
+        }
+
+        function attemptLogin() {
+            const password = document.getElementById('adminPasswordInput').value;
+            if (password === adminPassword) {
+                isAdminLoggedIn = true;
+                sessionStorage.setItem('mohtv_admin_session', 'true');
+                closeAdminLogin();
+                openAdminDashboard();
+                showToast(t('login'), 'success');
+            } else {
+                document.getElementById('loginError').classList.remove('hidden');
+                setTimeout(() => {
+                    document.getElementById('loginError').classList.add('hidden');
+                }, 3000);
+            }
+        }
+
+        function logoutAdmin() {
+            isAdminLoggedIn = false;
+            sessionStorage.removeItem('mohtv_admin_session');
+            document.getElementById('adminDashboard').classList.add('hidden');
+            showToast(t('logout'), 'info');
+        }
+
+        function openAdminDashboard() {
+            document.getElementById('adminDashboard').classList.remove('hidden');
+            renderAdminDashboard();
+            showAdminTab('dashboard');
+        }
+
+        function showAdminTab(tab) {
+            document.querySelectorAll('.admin-tab-content').forEach(t => t.classList.add('hidden'));
+            document.getElementById('adminTab-' + tab).classList.remove('hidden');
+            
+            document.querySelectorAll('.admin-sidebar-item').forEach(item => {
+                item.classList.toggle('active', item.dataset.tab === tab);
+            });
+            document.querySelectorAll('.admin-tab-btn').forEach(btn => {
+                if (btn.dataset.tab === tab) {
+                    btn.classList.add('active', 'border-purple-500');
+                    btn.classList.remove('text-slate-400', 'border-transparent');
+                } else {
+                    btn.classList.remove('active', 'border-purple-500');
+                    btn.classList.add('text-slate-400', 'border-transparent');
+                }
+            });
+
+            if (tab === 'channels') renderAdminChannels();
+            if (tab === 'importlog') renderImportLog();
+            if (tab === 'dashboard') renderAdminDashboard();
+        }
+
+        function renderAdminDashboard() {
+            document.getElementById('statTotalChannels').textContent = channels.length;
+            document.getElementById('statCategories').textContent = [...new Set(channels.map(ch => ch.group))].length;
+            const totalViews = Object.values(watchStats).reduce((a, b) => a + b, 0);
+            document.getElementById('statViews').textContent = totalViews;
+            document.getElementById('statImports').textContent = importLog.length;
+
+            // Top watched
+            const topWatched = channels
+                .map(ch => ({ ...ch, views: watchStats[ch.id] || 0 }))
+                .sort((a, b) => b.views - a.views)
+                .slice(0, 5);
+            
+            const topContainer = document.getElementById('adminTopWatched');
+            if (topWatched.filter(ch => ch.views > 0).length > 0) {
+                topContainer.innerHTML = topWatched.filter(ch => ch.views > 0).map((ch, i) => `
+                    <div class="flex items-center gap-3 p-3 rounded-xl bg-white/3">
+                        <span class="text-2xl font-black ${i === 0 ? 'text-yellow-400' : i === 1 ? 'text-slate-400' : i === 2 ? 'text-orange-400' : 'text-slate-500'}">${i + 1}</span>
+                        <div class="w-8 h-8 rounded-lg channel-logo-placeholder overflow-hidden flex-shrink-0">
+                            ${ch.logo ? `<img src="${ch.logo}" class="w-full h-full object-contain" onerror="this.parentElement.innerHTML='<span class=\\'text-purple-400 font-bold text-sm\\'>${ch.name.charAt(0)}</span>'">` : `<span class="text-purple-400 font-bold flex items-center justify-center w-full h-full text-sm">${ch.name.charAt(0)}</span>`}
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="text-sm font-semibold truncate">${ch.name}</p>
+                            <p class="text-xs text-slate-500">${ch.group || ''}</p>
+                        </div>
+                        <span class="text-sm font-bold text-orange-400">${ch.views}</span>
+                    </div>
+                `).join('');
+            } else {
+                topContainer.innerHTML = `<p class="text-slate-500 text-sm text-center py-4">${t('noResults')}</p>`;
+            }
+
+            // Recent imports
+            const recentContainer = document.getElementById('adminRecentImports');
+            if (importLog.length > 0) {
+                recentContainer.innerHTML = importLog.slice(0, 5).map(log => {
+                    const date = new Date(log.timestamp);
+                    return `
+                        <div class="flex items-center gap-3 p-3 rounded-xl bg-white/3">
+                            <div class="w-8 h-8 rounded-lg bg-green-500/20 flex items-center justify-center flex-shrink-0">
+                                <i class="lucide lucide-upload text-green-400" style="font-size:16px"></i>
+                            </div>
+                            <div class="flex-1 min-w-0">
+                                <p class="text-sm font-semibold truncate">${log.source}</p>
+                                <p class="text-xs text-slate-500">${date.toLocaleDateString(currentLang === 'ar' ? 'ar' : currentLang)} - ${date.toLocaleTimeString(currentLang === 'ar' ? 'ar' : currentLang, {hour: '2-digit', minute: '2-digit'})}</p>
+                            </div>
+                            <span class="text-sm font-bold text-purple-400">${log.count}</span>
+                        </div>
+                    `;
+                }).join('');
+            } else {
+                recentContainer.innerHTML = `<p class="text-slate-500 text-sm text-center py-4">${t('noImportLog')}</p>`;
+            }
+        }
+
+        function renderAdminChannels() {
+            const search = document.getElementById('adminChannelSearch')?.value.toLowerCase() || '';
+            const filtered = channels.filter(ch => ch.name.toLowerCase().includes(search));
+            const container = document.getElementById('adminChannelsList');
+
+            if (filtered.length === 0) {
+                container.innerHTML = `<tr><td colspan="4" class="text-center py-8 text-slate-500">${t('noResults')}</td></tr>`;
+                return;
+            }
+
+            container.innerHTML = filtered.map(ch => `
+                <tr class="border-b border-white/5 hover:bg-white/2 transition">
+                    <td class="p-4">
+                        <div class="flex items-center gap-3">
+                            <div class="w-10 h-10 rounded-lg channel-logo-placeholder overflow-hidden flex-shrink-0">
+                                ${ch.logo ? `<img src="${ch.logo}" class="w-full h-full object-contain" onerror="this.parentElement.innerHTML='<span class=\\'text-purple-400 font-bold\\'>${ch.name.charAt(0)}</span>'">` : `<span class="text-purple-400 font-bold flex items-center justify-center w-full h-full">${ch.name.charAt(0)}</span>`}
+                            </div>
+                            <div class="min-w-0">
+                                <p class="font-semibold text-sm truncate ${ch.hidden ? 'opacity-50' : ''}">${ch.name}</p>
+                                ${ch.hidden ? '<p class="text-xs text-yellow-400">' + t('hidden') + '</p>' : ''}
+                            </div>
+                        </div>
+                    </td>
+                    <td class="p-4 hidden sm:table-cell">
+                        <span class="text-sm text-slate-400">${ch.group || '-'}</span>
+                    </td>
+                    <td class="p-4 hidden md:table-cell">
+                        <span class="text-sm text-orange-400 font-semibold">${watchStats[ch.id] || 0}</span>
+                    </td>
+                    <td class="p-4">
+                        <div class="flex items-center gap-1">
+                            <button onclick="editChannel('${ch.id}')" class="p-2 rounded-lg hover:bg-white/5 transition text-cyan-400" title="${t('edit')}">
+                                <i class="lucide lucide-edit-3" style="font-size:16px"></i>
+                            </button>
+                            <button onclick="toggleChannelVisibility('${ch.id}')" class="p-2 rounded-lg hover:bg-white/5 transition ${ch.hidden ? 'text-yellow-400' : 'text-slate-400'}" title="${ch.hidden ? t('show') : t('hide')}">
+                                <i class="lucide lucide-${ch.hidden ? 'eye' : 'eye-off'}" style="font-size:16px"></i>
+                            </button>
+                            <button onclick="moveChannelUp('${ch.id}')" class="p-2 rounded-lg hover:bg-white/5 transition text-slate-400" title="↑">
+                                <i class="lucide lucide-arrow-up" style="font-size:16px"></i>
+                            </button>
+                            <button onclick="moveChannelDown('${ch.id}')" class="p-2 rounded-lg hover:bg-white/5 transition text-slate-400" title="↓">
+                                <i class="lucide lucide-arrow-down" style="font-size:16px"></i>
+                            </button>
+                            <button onclick="deleteChannel('${ch.id}')" class="p-2 rounded-lg hover:bg-red-500/10 transition text-red-400" title="${t('delete')}">
+                                <i class="lucide lucide-trash-2" style="font-size:16px"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `).join('');
+        }
+
+        function editChannel(id) {
+            const ch = channels.find(c => c.id === id);
+            if (!ch) return;
+            
+            const newName = prompt(t('edit') + ' - ' + t('channel'), ch.name);
+            if (newName !== null) {
+                ch.name = newName.trim() || ch.name;
+            }
+            
+            const newLogo = prompt(t('edit') + ' - Logo URL', ch.logo || '');
+            if (newLogo !== null) {
+                ch.logo = newLogo.trim();
+            }
+            
+            const newGroup = prompt(t('edit') + ' - ' + t('category'), ch.group || '');
+            if (newGroup !== null) {
+                ch.group = newGroup.trim() || 'Uncategorized';
+            }
+
+            const newUrl = prompt(t('edit') + ' - URL', ch.url);
+            if (newUrl !== null) {
+                ch.url = newUrl.trim() || ch.url;
+            }
+
+            saveChannels();
+            renderAdminChannels();
+            renderChannels();
+            renderCategories();
+            showToast(t('save'), 'success');
+        }
+
+        function toggleChannelVisibility(id) {
+            const ch = channels.find(c => c.id === id);
+            if (ch) {
+                ch.hidden = !ch.hidden;
+                saveChannels();
+                renderAdminChannels();
+                renderChannels();
+                renderCategories();
+                showToast(ch.hidden ? t('hidden') : t('shown'), 'info');
+            }
+        }
+
+        function moveChannelUp(id) {
+            const index = channels.findIndex(c => c.id === id);
+            if (index > 0) {
+                // Swap order
+                const tempOrder = channels[index].order;
+                channels[index].order = channels[index - 1].order;
+                channels[index - 1].order = tempOrder;
+                // Swap positions
+                [channels[index], channels[index - 1]] = [channels[index - 1], channels[index]];
+                saveChannels();
+                renderAdminChannels();
+                renderChannels();
+            }
+        }
+
+        function moveChannelDown(id) {
+            const index = channels.findIndex(c => c.id === id);
+            if (index < channels.length - 1 && index !== -1) {
+                const tempOrder = channels[index].order;
+                channels[index].order = channels[index + 1].order;
+                channels[index + 1].order = tempOrder;
+                [channels[index], channels[index + 1]] = [channels[index + 1], channels[index]];
+                saveChannels();
+                renderAdminChannels();
+                renderChannels();
+            }
+        }
+
+        function deleteChannel(id) {
+            if (!confirm(t('confirmDelete'))) return;
+            channels = channels.filter(c => c.id !== id);
+            delete watchStats[id];
+            saveChannels();
+            saveWatchStats();
+            renderAdminChannels();
+            renderChannels();
+            renderCategories();
+            renderAdminDashboard();
+            showToast(t('deleted'), 'success');
+        }
+
+        function clearAllChannels() {
+            if (!confirm(t('confirmClearAll'))) return;
+            channels = [];
+            watchStats = {};
+            saveChannels();
+            saveWatchStats();
+            renderAdminChannels();
+            renderChannels();
+            renderCategories();
+            renderAdminDashboard();
+            showToast(t('deleted'), 'success');
+        }
+
+        function exportChannels() {
+            let m3uContent = '#EXTM3U\n';
+            channels.forEach(ch => {
+                m3uContent += `#EXTINF:-1 tvg-id="${ch.tvgId || ''}" tvg-name="${ch.name}" tvg-logo="${ch.logo || ''}" group-title="${ch.group || ''}",${ch.name}\n`;
+                m3uContent += ch.url + '\n';
+            });
+
+            const blob = new Blob([m3uContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = 'mohtv_export.m3u';
+            a.click();
+            URL.revokeObjectURL(url);
+            showToast(t('export'), 'success');
+        }
+
+        function renderImportLog() {
+            const container = document.getElementById('importLogContainer');
+            if (importLog.length === 0) {
+                container.innerHTML = `
+                    <div class="glass rounded-2xl p-12 text-center">
+                        <div class="w-16 h-16 mx-auto rounded-full glass flex items-center justify-center mb-4">
+                            <i class="lucide lucide-inbox text-slate-500" style="font-size:28px"></i>
+                        </div>
+                        <p class="text-slate-400">${t('noImportLog')}</p>
+                    </div>
+                `;
+                return;
+            }
+
+            container.innerHTML = importLog.map(log => {
+                const date = new Date(log.timestamp);
+                return `
+                    <div class="glass rounded-2xl p-4 flex items-center gap-4">
+                        <div class="w-12 h-12 rounded-xl gradient-bg flex items-center justify-center flex-shrink-0">
+                            <i class="lucide lucide-upload text-white" style="font-size:20px"></i>
+                        </div>
+                        <div class="flex-1 min-w-0">
+                            <p class="font-semibold text-sm truncate">${log.source}</p>
+                            <p class="text-xs text-slate-500">${date.toLocaleString(currentLang === 'ar' ? 'ar' : currentLang)}</p>
+                            <p class="text-xs text-slate-400 mt-1">${log.details}</p>
+                        </div>
+                        <div class="text-right">
+                            <p class="text-2xl font-black gradient-text">${log.count}</p>
+                            <p class="text-xs text-slate-500">${t('channels2')}</p>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function changePassword() {
+            const newPass = document.getElementById('newPasswordInput').value.trim();
+            if (!newPass) {
+                showToast(t('changePassword'), 'warning');
+                return;
+            }
+            if (newPass.length < 4) {
+                showToast('4+', 'warning');
+                return;
+            }
+            adminPassword = newPass;
+            localStorage.setItem('mohtv_admin_pass', adminPassword);
+            document.getElementById('newPasswordInput').value = '';
+            showToast(t('passwordChanged'), 'success');
+        }
+
+        function clearWatchStats() {
+            watchStats = {};
+            saveWatchStats();
+            renderAdminDashboard();
+            renderAdminChannels();
+            renderChannels();
+            showToast(t('clearStats'), 'success');
+        }
+
+        function resetAllData() {
+            if (!confirm(t('confirmReset'))) return;
+            localStorage.removeItem('mohtv_channels');
+            localStorage.removeItem('mohtv_watch_stats');
+            localStorage.removeItem('mohtv_import_log');
+            localStorage.removeItem('mohtv_player_settings');
+            localStorage.removeItem('mohtv_admin_pass');
+            channels = defaultChannels;
+            saveChannels();
+            watchStats = {};
+            importLog = [];
+            adminPassword = 'admin123';
+            showToast(t('resetAll'), 'success');
+            renderAdminDashboard();
+            renderAdminChannels();
+            renderChannels();
+            renderCategories();
+        }
+
+        // ==================== INITIALIZATION ====================
+        function init() {
+            changeLanguage(currentLang);
+            renderCategories();
+            renderChannels();
+            
+            // Sync search inputs
+            const searchInput = document.getElementById('searchInput');
+            const searchInputMobile = document.getElementById('searchInputMobile');
+            searchInput.addEventListener('input', () => searchInputMobile.value = searchInput.value);
+            searchInputMobile.addEventListener('input', () => searchInput.value = searchInputMobile.value);
+        }
+
+        // Run on load
+        window.addEventListener('DOMContentLoaded', init);
+
+        // Handle video events for better UX
+        document.getElementById('videoPlayer').addEventListener('click', (e) => {
+            if (e.target === document.getElementById('videoPlayer')) {
+                togglePlayPause();
             }
         });
     </script>
