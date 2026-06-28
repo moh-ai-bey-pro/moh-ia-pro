@@ -42,7 +42,8 @@
         <div class="md:col-span-2 bg-[var(--bg-tertiary)] p-4 rounded-xl border border-white/10">
             <h2 class="text-lg font-semibold mb-4 border-b border-white/10 pb-2">قائمة القنوات المتاحة</h2>
             <div id="channelsList" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
-                </div>
+                <p id="loadingText" class="text-center text-[var(--text-secondary)] py-8 col-span-full">جاري تحميل الباقة وتجهيز القنوات...</p>
+            </div>
         </div>
 
         <div class="bg-[var(--bg-secondary)] p-4 rounded-xl border border-white/10 h-fit sticky top-4">
@@ -58,59 +59,59 @@
     </footer>
 
     <script>
-        // مصفوفة تحتوي على أكثر من 200 قناة المستخرجة من ملفك
-        const defaultChannels = [
-            {
-                id: "ch_1",
-                name: "تحديث ملف متوفر علي موقع ايبي فور اون",
-                url: "https://i.top4top.io/m_3817gh0p61.mp4",
-                category: "تنبيهات",
-                logo: "https://j.top4top.io/p_2805lxgyw1.jpg"
-            },
-            {
-                id: "ch_quran",
-                name: "Saudi Quran",
-                url: "http://fueg-01.xyz:80/live/2370353253/esldgs57qoigmzxzmn2s/169.m3u8",
-                category: "ISLAM TV",
-                logo: "http://138.199.27.237:8080/ASIA/SAUDIARABIA/SAUDIQURAN.png"
-            },
-            {
-                id: "ch_alwan6",
-                name: "Alwan Sport 6 SD",
-                url: "http://fueg-01.xyz:80/live/2370353253/esldgs57qoigmzxzmn2s/1641629.m3u8",
-                category: "ALWAN SPORT",
-                logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuhH7QXR24YA4PeJNfQRsxALFC3Sbaw_fhpg&s"
-            },
-            {
-                id: "ch_alwan7",
-                name: "Alwan Sport 7 4K",
-                url: "http://fueg-01.xyz:80/live/2370353253/esldgs57qoigmzxzmn2s/1641611.m3u8",
-                category: "ALWAN SPORT",
-                logo: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTuhH7QXR24YA4PeJNfQRsxALFC3Sbaw_fhpg&s"
-            }
-            // تم استيعاب جميع القنوات وتحميلها مسبقاً، يمكنك إبقاء القائمة هكذا وستعمل بكفاءة.
-        ];
+        let channels = [];
 
-        // دالة بناء وعرض القنوات في الصفحة
+        // دالة تحليل ملف M3U
+        function parseM3U(m3uContent) {
+            const lines = m3uContent.split('\n');
+            const parsed = [];
+            let currentChannel = null;
+
+            for (let i = 0; i < lines.length; i++) {
+                const line = lines[i].trim();
+                
+                if (line.startsWith('#EXTINF:')) {
+                    currentChannel = {};
+                    // استخراج الشعار
+                    const logoMatch = line.match(/tvg-logo="([^"]+)"/);
+                    currentChannel.logo = logoMatch ? logoMatch[1] : 'https://via.placeholder.com/150/161624/ffffff?text=MOH+TV';
+
+                    // استخراج الاسم
+                    const nameMatch = line.split(',');
+                    currentChannel.name = nameMatch[1] ? nameMatch[1].trim() : 'قناة غير مسماة';
+                    
+                    // استخراج الفئة
+                    const groupMatch = line.match(/group-title="([^"]+)"/);
+                    currentChannel.category = groupMatch ? groupMatch[1] : 'عامة';
+                } else if (line.startsWith('http') && currentChannel) {
+                    currentChannel.url = line;
+                    parsed.push(currentChannel);
+                    currentChannel = null; 
+                }
+            }
+            return parsed;
+        }
+
+        // دالة عرض القنوات في الصفحة
         function renderChannels() {
             const container = document.getElementById('channelsList');
             container.innerHTML = '';
 
-            if (defaultChannels.length === 0) {
+            if (channels.length === 0) {
                 container.innerHTML = `<p class="text-[var(--text-secondary)] text-sm col-span-full text-center py-8">لا توجد قنوات متاحة.</p>`;
                 return;
             }
 
-            defaultChannels.forEach(channel => {
+            channels.forEach(channel => {
                 const card = document.createElement('div');
                 card.className = "bg-[var(--bg-primary)] p-3 rounded-lg cursor-pointer border border-white/10 hover:border-[var(--accent-purple)] transition flex flex-col items-center text-center";
                 
                 card.onclick = () => playChannel(channel.url);
                 
                 card.innerHTML = `
-                    <img src="${channel.logo || 'https://via.placeholder.com/150'}" alt="${channel.name}" class="w-16 h-16 object-cover rounded-lg mb-2 onerror="this.src='https://via.placeholder.com/150'">
-                    <h3 class="font-medium text-sm text-white">${channel.name}</h3>
-                    <span class="text-xs text-[var(--text-secondary)] mt-1">${channel.category}</span>
+                    <img src="${channel.logo}" alt="${channel.name}" class="w-16 h-16 object-cover rounded-lg mb-2" onerror="this.src='https://via.placeholder.com/150'">
+                    <h3 class="font-medium text-sm text-white line-clamp-1">${channel.name}</h3>
+                    <span class="text-xs text-[var(--text-secondary)] mt-1 line-clamp-1">${channel.category}</span>
                 `;
                 container.appendChild(card);
             });
@@ -131,13 +132,33 @@
             }
         }
 
+        // جلب ملف القنوات تلقائياً عند فتح الموقع
+        async function loadPlaylistAutomatically() {
+            // ضع هنا الاسم الدقيق لملف البلاي ليست الخاص بك والموجود في نفس المجلد
+            const fileName = "موقع ايبي فور اون - IP4ON - بجميع الجودات - 26-6-2026.m3u8";
+            
+            try {
+                const response = await fetch(fileName);
+                if (!response.ok) throw new Error('الملف غير موجود');
+                
+                const data = await response.text();
+                channels = parseM3U(data);
+                
+                renderChannels();
+                
+                // تشغيل أول قناة تلقائياً
+                if (channels.length > 0) {
+                    playChannel(channels[0].url);
+                }
+            } catch (error) {
+                console.error("خطأ في جلب ملف القنوات:", error);
+                document.getElementById('loadingText').innerHTML = "فشل في تحميل البلاي ليست، يرجى التأكد من وجود ملف .m3u8 في نفس المجلد.";
+            }
+        }
+
         // تهيئة التطبيق عند الدخول
         window.addEventListener('DOMContentLoaded', () => {
-            renderChannels();
-            // تشغيل أول قناة تلقائياً عند الدخول
-            if (defaultChannels.length > 0) {
-                playChannel(defaultChannels[0].url);
-            }
+            loadPlaylistAutomatically();
         });
     </script>
 </body>
