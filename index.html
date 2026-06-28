@@ -23,19 +23,51 @@
             font-family: 'Inter', 'Cairo', sans-serif;
             background-color: var(--bg-primary);
             color: var(--text-primary);
+            margin: 0;
+            padding: 0;
+            min-height: 100vh;
         }
     </style>
 </head>
 <body class="min-h-screen flex flex-col">
 
+    <header class="bg-[var(--bg-secondary)] p-4 shadow-md border-b border-white/5">
+        <div class="container mx-auto flex justify-between items-center">
+            <h1 class="text-xl font-bold text-white flex items-center gap-2">
+                <i class="lucide-tv"></i> MOH TV Pro
+            </h1>
+        </div>
+    </header>
+
+    <main class="flex-grow container mx-auto p-4 md:p-6">
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="md:col-span-2 bg-[var(--bg-tertiary)] rounded-xl p-4 border border-white/5">
+                <h2 class="text-lg font-semibold mb-4 text-[var(--text-primary)]">قائمة القنوات المتاحة</h2>
+                <div id="channelsList" class="grid grid-cols-2 sm:grid-cols-3 gap-4">
+                    </div>
+            </div>
+
+            <div class="bg-[var(--bg-secondary)] rounded-xl p-4 border border-white/5 h-fit sticky top-4">
+                <h2 class="text-lg font-semibold mb-4 text-[var(--text-primary)]">مشغل البث</h2>
+                <div class="aspect-video bg-black rounded-lg overflow-hidden relative">
+                    <video id="videoPlayer" class="w-full h-full object-contain" controls autoplay playsinline></video>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="bg-[var(--bg-secondary)] text-center py-4 border-t border-white/5 mt-auto text-sm text-[var(--text-secondary)]">
+        تم التصميم بواسطة MOH TV Pro
+    </footer>
+
     <script>
         const STORAGE_KEY = 'mohtv_channels';
         
-        // --- ضع هنا قنواتك (Playlists) الخاصة التي تريد أن تظهر للجميع ---
+        // --- باقة القنوات الخاصة بك (Playlists) ---
         const defaultChannels = [
             {
                 id: "ch_1",
-                name: "القناة الأولى (مثال)",
+                name: "القناة الأولى (تجريبية)",
                 url: "https://test-streams.mux.dev/x3636/x3636.m3u8",
                 category: "عامة",
                 logo: "https://images.unsplash.com/photo-1585829365295-ab7cd400c167?w=100",
@@ -43,7 +75,7 @@
             },
             {
                 id: "ch_2",
-                name: "قناة رياضية (مثال)",
+                name: "قناة رياضية (تجريبية)",
                 url: "https://demo.unified-streaming.com/k8s/features/stable/video/tears-of-steel/tears-of-steel.ism/.m3u8",
                 category: "رياضة",
                 logo: "https://images.unsplash.com/photo-1431327151626-96f8c7270f7a?w=100",
@@ -51,54 +83,65 @@
             }
         ];
 
-        // تحميل القنوات أو تعيين القنوات الافتراضية إذا لم تكن موجودة
         let channels = [];
-        try {
-            const stored = localStorage.getItem(STORAGE_KEY);
-            if (stored) {
-                channels = JSON.parse(stored);
-            } else {
+        
+        function loadChannels() {
+            try {
+                const stored = localStorage.getItem(STORAGE_KEY);
+                if (stored) {
+                    channels = JSON.parse(stored);
+                } else {
+                    channels = [...defaultChannels];
+                    localStorage.setItem(STORAGE_KEY, JSON.stringify(channels));
+                }
+            } catch (e) {
+                console.error("خطأ في قراءة البيانات", e);
                 channels = [...defaultChannels];
-                localStorage.setItem(STORAGE_KEY, JSON.stringify(channels));
             }
-        } catch (e) {
-            console.error("Error reading from localStorage", e);
-            channels = [...defaultChannels];
         }
 
-        function saveChannels() {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(channels));
-        }
-
-        // دالة عرض القنوات المبسطة
         function renderChannels() {
-            console.log("Channels loaded:", channels);
-            // يمكنك إضافة الكود الخاص بتحديث واجهة المستخدم (DOM) هنا إن وجد
-        }
-
-        function renderCategories() {
-            // منطق عرض الفئات
-        }
-
-        function changeLanguage(lang) {
-            // منطق اللغة
-        }
-
-        // ==================== INITIALIZATION ====================\
-        function init() {
-            renderCategories();
-            renderChannels();
+            const container = document.getElementById('channelsList');
+            if (!container) return;
             
-            // Sync search inputs
-            const searchInput = document.getElementById('searchInput');
-            const searchInputMobile = document.getElementById('searchInputMobile');
-            if(searchInput && searchInputMobile) {
-                searchInput.addEventListener('input', () => searchInputMobile.value = searchInput.value);
-                searchInputMobile.addEventListener('input', () => searchInput.value = searchInputMobile.value);
+            container.innerHTML = '';
+            channels.forEach(channel => {
+                const card = document.createElement('div');
+                card.className = "bg-[var(--bg-primary)] p-3 rounded-lg cursor-pointer border border-white/10 hover:border-[var(--accent-purple)] transition flex flex-col items-center text-center";
+                card.onclick = () => playChannel(channel.url);
+                
+                card.innerHTML = `
+                    <img src="${channel.logo || 'https://via.placeholder.com/100'}" alt="${channel.name}" class="w-16 h-16 object-cover rounded-lg mb-2">
+                    <h3 class="font-medium text-sm text-white">${channel.name}</h3>
+                    <span class="text-xs text-[var(--text-secondary)] mt-1">${channel.category}</span>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function playChannel(url) {
+            const video = document.getElementById('videoPlayer');
+            if (Hls.isSupported()) {
+                const hls = new Hls();
+                hls.loadSource(url);
+                hls.attachMedia(video);
+                video.play().catch(e => console.log("الرجاء الضغط على تشغيل الفيديو يدوياً", e));
+            } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
+                video.src = url;
+                video.play().catch(e => console.log("الرجاء الضغط على تشغيل الفيديو يدوياً", e));
             }
         }
 
-        // Run on load
+        function init() {
+            loadChannels();
+            renderChannels();
+            // تشغيل أول قناة افتراضياً بشكل تجريبي
+            if (channels.length > 0) {
+                playChannel(channels[0].url);
+            }
+        }
+
+        // تشغيل الكود بمجرد تحميل الصفحة بالكامل
         window.addEventListener('DOMContentLoaded', init);
     </script>
 </body>
